@@ -9,7 +9,6 @@ public class App {
     int tmp = nums[i];
     nums[i] = nums[j];
     nums[j] = tmp;
-    
   }
 
   public int partition(int[] nums, int start, int end) {
