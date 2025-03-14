@@ -17,6 +17,23 @@ public class Jugador extends Usuario {
 
 	private List<Asistencia> asistencias;
 
+	public Jugador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
+			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
+			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2,
+			List<Asistencia> asistencias) {
+		
+		super(tel, nombre, fechaNac, email, pass, rol);
+		this.dniDelantera = dniDelantera;
+		this.dniTrasera = dniTrasera;
+		this.emailTutor1 = emailTutor1;
+		this.dniDelanteraTutor1 = dniDelanteraTutor1;
+		this.dniTraseraTutor1 = dniTraseraTutor1;
+		this.emailTutor2 = emailTutor2;
+		this.dniDelanteraTutor2 = dniDelanteraTutor2;
+		this.dniTraseraTutor2 = dniTraseraTutor2;
+		this.asistencias = asistencias;
+	}
+
 	public List<Asistencia> getAsistencias() {
 		return asistencias;
 	}

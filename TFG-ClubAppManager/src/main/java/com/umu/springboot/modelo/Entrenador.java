@@ -1,9 +1,19 @@
 package com.umu.springboot.modelo;
 
+import java.time.LocalDate;
+
 public class Entrenador extends Usuario {
 	private String dniDelantera; // TODO
 	private String dniTrasera; // TODO
 	private String certificadoDelitosSexuales; // TODO
+
+	public Entrenador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
+			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
+		super(tel, nombre, fechaNac, email, pass, rol);
+		this.dniDelantera = dniDelantera;
+		this.dniTrasera = dniTrasera;
+		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
+	}
 
 	public String getDniDelantera() {
 		return dniDelantera;

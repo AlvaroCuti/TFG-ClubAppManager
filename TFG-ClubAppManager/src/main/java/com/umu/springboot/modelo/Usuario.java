@@ -11,6 +11,16 @@ public class Usuario {
 	
 	private String rol;
 
+	public Usuario(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol) {
+		super();
+		this.tel = tel;
+		this.nombre = nombre;
+		this.fechaNac = fechaNac;
+		this.email = email;
+		this.pass = pass;
+		this.rol = rol;
+	}
+
 	public String getRol() {
 		return rol;
 	}
