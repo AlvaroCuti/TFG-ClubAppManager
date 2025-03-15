@@ -8,6 +8,12 @@ public class Entrenamiento {
 	private String lugar;
 	private List<Asistencia> asistencias;
 
+	public Entrenamiento(LocalDateTime horario, String lugar) {
+		this.horario = horario;
+		this.lugar = lugar;
+		this.asistencias = null;
+	}
+
 	public LocalDateTime getHorario() {
 		return horario;
 	}
