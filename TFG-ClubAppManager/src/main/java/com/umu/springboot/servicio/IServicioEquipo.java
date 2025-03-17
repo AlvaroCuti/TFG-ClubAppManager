@@ -14,7 +14,7 @@ public interface IServicioEquipo {
 	
 	Equipo getEquipo(String idEquipo);
 	
-	void modificarEquipo();
+	void modificarEquipo(String idEquipo,List<Entrenador> entrenadores, List<Jugador> jugadores);
 	
 	void borrarEquipo(String idEquipo);
 	

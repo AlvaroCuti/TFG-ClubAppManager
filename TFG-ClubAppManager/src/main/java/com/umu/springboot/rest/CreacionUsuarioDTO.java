@@ -1,9 +1,14 @@
-package com.umu.springboot.modelo;
+package com.umu.springboot.rest;
 
 import java.time.LocalDate;
-import java.util.List;
 
-public class Jugador extends Usuario {
+public class CreacionUsuarioDTO {
+	private String tel;
+	private String nombre;
+	private LocalDate fechaNac;
+	private String email;
+	private String pass;
+
 	private String dniDelantera; // TODO
 	private String dniTrasera; // TODO
 
@@ -14,14 +19,15 @@ public class Jugador extends Usuario {
 	private String emailTutor2;
 	private String dniDelanteraTutor2; // TODO
 	private String dniTraseraTutor2; // TODO
-
-	private List<Asistencia> asistencias;
-
-	public Jugador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
+	
+	public CreacionUsuarioDTO(String tel, String nombre, LocalDate fechaNac, String email, String pass,
 			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
 			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2) {
-
-		super(tel, nombre, fechaNac, email, pass, rol);
+		this.tel = tel;
+		this.nombre = nombre;
+		this.fechaNac = fechaNac;
+		this.email = email;
+		this.pass = pass;
 		this.dniDelantera = dniDelantera;
 		this.dniTrasera = dniTrasera;
 		this.emailTutor1 = emailTutor1;
@@ -30,15 +36,46 @@ public class Jugador extends Usuario {
 		this.emailTutor2 = emailTutor2;
 		this.dniDelanteraTutor2 = dniDelanteraTutor2;
 		this.dniTraseraTutor2 = dniTraseraTutor2;
-		this.asistencias = null;
 	}
 
-	public List<Asistencia> getAsistencias() {
-		return asistencias;
+	public String getTel() {
+		return tel;
 	}
 
-	public void setAsistencias(List<Asistencia> asistencias) {
-		this.asistencias = asistencias;
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public LocalDate getFechaNac() {
+		return fechaNac;
+	}
+
+	public void setFechaNac(LocalDate fechaNac) {
+		this.fechaNac = fechaNac;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
 	}
 
 	public String getDniDelantera() {

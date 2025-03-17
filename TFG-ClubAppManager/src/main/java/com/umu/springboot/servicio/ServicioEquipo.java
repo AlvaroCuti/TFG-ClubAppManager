@@ -8,14 +8,11 @@ import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
-import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
 
 public class ServicioEquipo implements IServicioEquipo {
 
 	@Autowired
 	private RepositorioEquipoMongo repositorioEquipo; // TODO
-	@Autowired
-	private RepositorioUsuarioMongo repositorioUsuario; // TODO
 
 	@Override
 	public String crearEquipo(List<Jugador> jugadores, List<Entrenador> entrenadores) {
@@ -58,7 +55,17 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public void modificarEquipo() {
+	public void modificarEquipo(String idEquipo, List<Entrenador> entrenadores, List<Jugador> jugadores) {
+		if (idEquipo == null || idEquipo.isEmpty())
+			return;
+
+		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
+
+		equipo.modificar(entrenadores, jugadores);
+
+		repositorioEquipo.save(equipo);
+
+		return;
 
 	}
 

@@ -1,13 +1,18 @@
 package com.umu.springboot.servicio;
 
+import com.umu.springboot.modelo.Jugador;
+import com.umu.springboot.modelo.Usuario;
+import com.umu.springboot.rest.CreacionUsuarioDTO;
+import com.umu.springboot.rest.VerificarUsuarioDTO;
+
 public interface IServicioUsuarios {
-	void darDeAltaUsuario();
-	void verificarCredenciales();
+	Jugador darDeAltaJugador(CreacionUsuarioDTO crearUsuarioDTO);
+	boolean verificarCredenciales(VerificarUsuarioDTO verificarDTO);
 	
-	void descargarInfoUsuarios();
+	Usuario descargarInfoUsuarios(String idUsuario);
 	
 	void crearEntrenador();
-	void obtenerEntrenador();
+	void getEntrenador(String idUsuario);
 	void modificarEntrenador();
 	void borrarEntrenador();
 	

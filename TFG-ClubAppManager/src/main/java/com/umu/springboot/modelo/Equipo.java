@@ -56,6 +56,11 @@ public class Equipo implements Identificable {
 	public void addEntrenamiento(Entrenamiento entrenamiento) {
 
 	}
+	
+	public void modificar(List<Entrenador> entrenadores, List<Jugador> jugadores) {
+		this.entrenadores = entrenadores;
+		this.jugadores = jugadores;
+	}
 
 	@Override
 	public String getId() {
