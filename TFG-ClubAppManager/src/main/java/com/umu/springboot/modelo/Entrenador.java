@@ -39,4 +39,16 @@ public class Entrenador extends Usuario {
 		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
 	}
 
+	public void modificar(String tel, String nombre, LocalDate fechaNac, String email, String pass, String dniDelantera,
+			String dniTrasera, String certificadoDelitosSexuales) {
+		this.setTel(tel);
+		this.setNombre(nombre);
+		this.setFechaNac(fechaNac);
+		this.setEmail(email);
+		this.setPass(pass);
+		this.setDniDelantera(dniDelantera);
+		this.setDniTrasera(dniTrasera);
+		this.setCertificadoDelitosSexuales(certificadoDelitosSexuales);
+	}
+
 }
