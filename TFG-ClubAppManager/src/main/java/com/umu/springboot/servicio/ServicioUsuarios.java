@@ -1,6 +1,8 @@
 package com.umu.springboot.servicio;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Jugador;
@@ -12,6 +14,8 @@ import com.umu.springboot.rest.CreacionJugadorDTO;
 import com.umu.springboot.rest.ModificacionEntrenadorDTO;
 import com.umu.springboot.rest.VerificarUsuarioDTO;
 
+@Service
+@Transactional
 public class ServicioUsuarios implements IServicioUsuarios {
 
 	@Autowired
