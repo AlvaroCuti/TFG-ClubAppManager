@@ -1,6 +1,7 @@
 package com.umu.springboot.rest;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.umu.springboot.modelo.Entrenamiento;
+import com.umu.springboot.servicio.IServicioEntrenamiento;
 import com.umu.springboot.servicio.IServicioEquipo;
 
 import jakarta.validation.Valid;
@@ -32,9 +35,13 @@ public class EquiposControladorRest {
 
 	@Autowired
 	private IServicioEquipo servicioEquipo;
+	@Autowired
+	private IServicioEntrenamiento servicioEntrenamiento;
 	
 	@Autowired
-	private PagedResourcesAssembler<EquipoDTO> pagedResourcesAssembler;
+	private PagedResourcesAssembler<EquipoDTO> pagedResourcesAssembler1;
+	@Autowired
+	private PagedResourcesAssembler<EntrenamientoDTO> pagedResourcesAssembler2;
 	
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('admin)")
@@ -43,7 +50,7 @@ public class EquiposControladorRest {
 		
 		Page<EquipoDTO> listaEquiposDTO = servicioEquipo.listarEquipos(paginacion);
 		
-		return this.pagedResourcesAssembler.toModel(listaEquiposDTO, equipo -> {
+		return this.pagedResourcesAssembler1.toModel(listaEquiposDTO, equipo -> {
 			EntityModel<EquipoDTO> model = EntityModel.of(equipo);
 			return model;
 		});
@@ -66,14 +73,41 @@ public class EquiposControladorRest {
 	
 	@PutMapping(value = "/{idEquipo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('admin)")
-	public void modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) {
+	public ResponseEntity<Void> modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) {
 		servicioEquipo.modificarEquipo(idEquipo, servicioEquipo.dtoToModelEntrenador(modificarEquipoDTO.getEntrenadores()), servicioEquipo.dtoToModelJugador(modificarEquipoDTO.getJugadores()));
+		return ResponseEntity.noContent().build();
 	}	
 	
 	@PostMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('admin)")
 	public ResponseEntity<Void> borrarEquipo(@PathVariable String idEquipo) {
 		servicioEquipo.borrarEquipo(idEquipo);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PostMapping(value = "/{idEquipo}/entrenamientos", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('entrenador)")
+	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo, @Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) {
+		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, LocalDateTime.parse(programarEntrenamientoDTO.getFecha()), programarEntrenamientoDTO.getLugar());
+		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}").buildAndExpand(idEntrenamiento).toUri();
+		return ResponseEntity.created(url).build();
+	}
+	
+	@GetMapping(value = "/{idEquipo}/entrenamientos", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('entrenador)")
+	public PagedModel<EntityModel<EntrenamientoDTO>> listarEntrenamientos(@PathVariable String idEquipo, @RequestParam int page, @RequestParam int size) {
+		Pageable paginacion = PageRequest.of(page, size);
+		Page<EntrenamientoDTO> listaEntrenamientosDTO = servicioEntrenamiento.listarEntrenamientos(idEquipo, paginacion);
+		return this.pagedResourcesAssembler2.toModel(listaEntrenamientosDTO, entrenamiento -> {
+			EntityModel<EntrenamientoDTO> model = EntityModel.of(entrenamiento);
+			return model;
+		});
+	}
+	
+	@PutMapping(value = "/{idEquipo}/entrenamientos/{idEntrenamiento}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('entrenador)")
+	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEquipo, @PathVariable String idUsuario) {
+		servicioEntrenamiento.confirmarAsistencia(idUsuario, idEquipo);
 		return ResponseEntity.noContent().build();
 	}
 	

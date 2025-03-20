@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
-import com.umu.springboot.rest.CreacionEquipoDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.EquipoDTO;
 import com.umu.springboot.rest.JugadorDTO;

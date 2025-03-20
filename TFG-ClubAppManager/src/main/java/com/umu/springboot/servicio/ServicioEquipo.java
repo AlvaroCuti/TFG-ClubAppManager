@@ -101,6 +101,7 @@ public class ServicioEquipo implements IServicioEquipo {
 	public Page<EquipoDTO> listarEquipos(Pageable paginacion) {
 		return repositorioEquipo.findAll(paginacion).map((Equipo e) -> {
 			EquipoDTO equipoDTO = new EquipoDTO();
+			equipoDTO.setIdEquipo(e.getId());
 			equipoDTO.setEntrenadores(e.getEntrenadores().toString());
 			equipoDTO.setNumeroJugadores(Integer.toString(e.getJugadores().size()));
 			return equipoDTO;

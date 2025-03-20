@@ -3,7 +3,15 @@ package com.umu.springboot.modelo;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Entrenamiento {
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.umu.springboot.repositorios.Identificable;
+
+@Document(collection = "entrenamiento")
+public class Entrenamiento implements Identificable {
+	@Id
+	private String idEntrenamiento;
 	private LocalDateTime horario;
 	private String lugar;
 	private List<Asistencia> asistencias;
@@ -36,6 +44,16 @@ public class Entrenamiento {
 
 	public void setAsistencias(List<Asistencia> asistencias) {
 		this.asistencias = asistencias;
+	}
+
+	@Override
+	public String getId() {
+		return idEntrenamiento;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.idEntrenamiento = id;
 	}
 
 }
