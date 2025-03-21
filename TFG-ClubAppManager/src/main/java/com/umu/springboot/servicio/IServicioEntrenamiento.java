@@ -10,7 +10,10 @@ import com.umu.springboot.modelo.Entrenamiento;
 import com.umu.springboot.rest.EntrenamientoDTO;
 
 public interface IServicioEntrenamiento {
+	
 	String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar);
+	
 	Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion);
+	
 	void confirmarAsistencia(String idEquipo, String idUsuario);
 }

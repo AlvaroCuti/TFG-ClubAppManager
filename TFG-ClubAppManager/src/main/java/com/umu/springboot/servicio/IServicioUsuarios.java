@@ -9,14 +9,19 @@ import com.umu.springboot.rest.ModificacionEntrenadorDTO;
 import com.umu.springboot.rest.VerificarUsuarioDTO;
 
 public interface IServicioUsuarios {
+	
 	Jugador darDeAltaJugador(CreacionJugadorDTO crearUsuarioDTO);
+	
 	boolean verificarCredenciales(VerificarUsuarioDTO verificarDTO);
 	
 	Usuario descargarInfoUsuarios(String idUsuario);
 	
 	Entrenador crearEntrenador(CreacionEntrenadorDTO crearEntrenadorDTO);
+	
 	void getEntrenador(String idUsuario);
+	
 	void modificarEntrenador(ModificacionEntrenadorDTO modificarEntrenadorDTO);
+	
 	void borrarEntrenador(String idEtrenador);
 	
 	void filtrarJugadores();
