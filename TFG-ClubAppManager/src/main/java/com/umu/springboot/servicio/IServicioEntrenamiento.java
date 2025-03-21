@@ -11,9 +11,9 @@ import com.umu.springboot.rest.EntrenamientoDTO;
 
 public interface IServicioEntrenamiento {
 	
-	String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar);
-	
 	Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion);
+	
+	String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar);
 	
 	void confirmarAsistencia(String idEquipo, String idUsuario);
 }

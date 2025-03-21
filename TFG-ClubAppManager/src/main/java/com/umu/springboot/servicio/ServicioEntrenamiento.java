@@ -28,28 +28,6 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	private RepositorioEntrenamientoMongo repositorioEntrenamiento;			//TODO
 	
 	@Override
-	public String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar) {
-		if ((idEquipo == null) || (idEquipo.isEmpty()))
-			return null;
-		
-		if (fecha == null)
-			return null;
-		
-		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
-		
-		if(equipo == null)
-			return null;
-			
-		Entrenamiento entrenamiento = new Entrenamiento(fecha, lugar);
-		
-		equipo.addEntrenamiento(entrenamiento);	
-		
-		String idEntrenamiento = repositorioEntrenamiento.save(entrenamiento).getId();
-		
-		return idEntrenamiento;
-	}
-
-	@Override
 	public Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion) {
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
 			return null;
@@ -69,6 +47,28 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 			return entrenamientoDTO;
 		});
 		
+	}
+	
+	@Override
+	public String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar) {
+		if ((idEquipo == null) || (idEquipo.isEmpty()))
+			return null;
+		
+		if (fecha == null)
+			return null;
+		
+		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
+		
+		if(equipo == null)
+			return null;
+			
+		Entrenamiento entrenamiento = new Entrenamiento(fecha, lugar);
+		
+		equipo.addEntrenamiento(entrenamiento);	
+		
+		String idEntrenamiento = repositorioEntrenamiento.save(entrenamiento).getId();
+		
+		return idEntrenamiento;
 	}
 
 	@Override

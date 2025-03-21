@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.umu.springboot.modelo.Usuario;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,6 +29,14 @@ public class JwtUtilidades {
 							.getBody();
 	}
 
+	public Map<String, Object> usuarioAClaims(Usuario usuario) {
+		Map<String, Object> mapaClaims = new HashMap<>();
+		mapaClaims.put("tel", usuario.getTel());
+		mapaClaims.put("pass", usuario.getPass());
+		mapaClaims.put("rol", usuario.getRol());
+		return mapaClaims;
+	}
+	
 	public boolean comprobacionTokenJWT(String token) {
 		Claims claims = getClaims(token);
 		

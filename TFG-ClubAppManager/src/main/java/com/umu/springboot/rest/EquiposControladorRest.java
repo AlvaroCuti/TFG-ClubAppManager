@@ -13,6 +13,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,14 +24,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.umu.springboot.modelo.Entrenamiento;
 import com.umu.springboot.servicio.IServicioEntrenamiento;
 import com.umu.springboot.servicio.IServicioEquipo;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/equipos")
+@RequestMapping("/api/equipo")
 public class EquiposControladorRest {
 
 	@Autowired
@@ -78,22 +78,14 @@ public class EquiposControladorRest {
 		return ResponseEntity.noContent().build();
 	}	
 	
-	@PostMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('admin)")
 	public ResponseEntity<Void> borrarEquipo(@PathVariable String idEquipo) {
 		servicioEquipo.borrarEquipo(idEquipo);
 		return ResponseEntity.noContent().build();
 	}
 	
-	@PostMapping(value = "/{idEquipo}/entrenamientos", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('entrenador)")
-	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo, @Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) {
-		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, LocalDateTime.parse(programarEntrenamientoDTO.getFecha()), programarEntrenamientoDTO.getLugar());
-		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}").buildAndExpand(idEntrenamiento).toUri();
-		return ResponseEntity.created(url).build();
-	}
-	
-	@GetMapping(value = "/{idEquipo}/entrenamientos", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/{idEquipo}/entrenamiento", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('entrenador)")
 	public PagedModel<EntityModel<EntrenamientoDTO>> listarEntrenamientos(@PathVariable String idEquipo, @RequestParam int page, @RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
@@ -104,7 +96,15 @@ public class EquiposControladorRest {
 		});
 	}
 	
-	@PutMapping(value = "/{idEquipo}/entrenamientos/{idEntrenamiento}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/{idEquipo}/entrenamiento", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('entrenador)")
+	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo, @Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) {
+		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, LocalDateTime.parse(programarEntrenamientoDTO.getFecha()), programarEntrenamientoDTO.getLugar());
+		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}").buildAndExpand(idEntrenamiento).toUri();
+		return ResponseEntity.created(url).build();
+	}
+	
+	@PutMapping(value = "/{idEquipo}/entrenamiento/{idEntrenamiento}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('entrenador)")
 	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEquipo, @PathVariable String idUsuario) {
 		servicioEntrenamiento.confirmarAsistencia(idUsuario, idEquipo);

@@ -14,6 +14,8 @@ import com.umu.springboot.rest.JugadorDTO;
 
 public interface IServicioEquipo {
 	
+	Page<EquipoDTO> listarEquipos(Pageable paginacion);
+	
 	String crearEquipo(List<Jugador> jugadores, List<Entrenador> entrenadores);
 	
 	String crearEquipo(List<Usuario> entrenadores);
@@ -23,9 +25,7 @@ public interface IServicioEquipo {
 	void modificarEquipo(String idEquipo, List<Usuario> entrenadores, List<Usuario> jugadores);
 	
 	void borrarEquipo(String idEquipo);
-	
-	Page<EquipoDTO> listarEquipos(Pageable paginacion);
-	
+		
 	public List<Usuario> dtoToModelEntrenador (List<EntrenadorDTO> entrenadoresDTO);	
 	
 	public List<Usuario> dtoToModelJugador (List<JugadorDTO> jugadoresDTO);		

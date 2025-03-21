@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class CreacionJugadorDTO {
 	private String tel;
 	private String nombre;
-	private LocalDate fechaNac;
+	private String fechaNac;
 	private String email;
 	private String pass;
 
@@ -20,7 +20,7 @@ public class CreacionJugadorDTO {
 	private String dniDelanteraTutor2; // TODO
 	private String dniTraseraTutor2; // TODO
 	
-	public CreacionJugadorDTO(String tel, String nombre, LocalDate fechaNac, String email, String pass,
+	public CreacionJugadorDTO(String tel, String nombre, String fechaNac, String email, String pass,
 			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
 			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2) {
 		this.tel = tel;
@@ -54,11 +54,11 @@ public class CreacionJugadorDTO {
 		this.nombre = nombre;
 	}
 
-	public LocalDate getFechaNac() {
+	public String getFechaNac() {
 		return fechaNac;
 	}
 
-	public void setFechaNac(LocalDate fechaNac) {
+	public void setFechaNac(String fechaNac) {
 		this.fechaNac = fechaNac;
 	}
 

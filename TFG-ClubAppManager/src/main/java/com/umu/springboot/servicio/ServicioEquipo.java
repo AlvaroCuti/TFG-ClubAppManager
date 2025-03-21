@@ -31,6 +31,17 @@ public class ServicioEquipo implements IServicioEquipo {
 	private RepositorioUsuarioMongo repositorioUsuario;
 
 	@Override
+	public Page<EquipoDTO> listarEquipos(Pageable paginacion) {
+		return repositorioEquipo.findAll(paginacion).map((Equipo e) -> {
+			EquipoDTO equipoDTO = new EquipoDTO();
+			equipoDTO.setIdEquipo(e.getId());
+			equipoDTO.setEntrenadores(e.getEntrenadores().toString());
+			equipoDTO.setNumeroJugadores(Integer.toString(e.getJugadores().size()));
+			return equipoDTO;
+		});
+	}
+	
+	@Override
 	public String crearEquipo(List<Jugador> jugadores, List<Entrenador> entrenadores) {
 
 		if (jugadores == null || jugadores.isEmpty())
@@ -95,17 +106,6 @@ public class ServicioEquipo implements IServicioEquipo {
 
 		repositorioEquipo.deleteById(idEquipo);
 		return;
-	}
-
-	@Override
-	public Page<EquipoDTO> listarEquipos(Pageable paginacion) {
-		return repositorioEquipo.findAll(paginacion).map((Equipo e) -> {
-			EquipoDTO equipoDTO = new EquipoDTO();
-			equipoDTO.setIdEquipo(e.getId());
-			equipoDTO.setEntrenadores(e.getEntrenadores().toString());
-			equipoDTO.setNumeroJugadores(Integer.toString(e.getJugadores().size()));
-			return equipoDTO;
-		});
 	}
 
 	public List<Usuario> dtoToModelEntrenador(List<EntrenadorDTO> entrenadoresDTO) {

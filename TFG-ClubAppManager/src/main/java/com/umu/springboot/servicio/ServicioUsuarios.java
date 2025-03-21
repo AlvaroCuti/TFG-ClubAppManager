@@ -1,6 +1,10 @@
 package com.umu.springboot.servicio;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +15,13 @@ import com.umu.springboot.repositorios.RepositorioEquipoMongo;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
 import com.umu.springboot.rest.CreacionEntrenadorDTO;
 import com.umu.springboot.rest.CreacionJugadorDTO;
+import com.umu.springboot.rest.EntrenadorDTO;
+import com.umu.springboot.rest.JugadorInfoDTO;
 import com.umu.springboot.rest.ModificacionEntrenadorDTO;
 import com.umu.springboot.rest.VerificarUsuarioDTO;
+
+import io.jsonwebtoken.Claims;
+import utils.JwtUtilidades;
 
 @Service
 @Transactional
@@ -23,38 +32,57 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	@Autowired
 	private RepositorioUsuarioMongo repositorioUsuario; // TODO
 
-	@Override
-	public Jugador darDeAltaJugador(CreacionJugadorDTO crearUsuarioDTO) {
-		Jugador jugador = new Jugador(crearUsuarioDTO.getTel(), crearUsuarioDTO.getNombre(),
-				crearUsuarioDTO.getFechaNac(), crearUsuarioDTO.getEmail(), crearUsuarioDTO.getPass(), "Jugador",
-				crearUsuarioDTO.getDniDelantera(), crearUsuarioDTO.getDniTrasera(), crearUsuarioDTO.getEmailTutor1(),
-				crearUsuarioDTO.getDniDelanteraTutor1(), crearUsuarioDTO.getDniTraseraTutor1(),
-				crearUsuarioDTO.getEmailTutor2(), crearUsuarioDTO.getDniDelanteraTutor2(),
-				crearUsuarioDTO.getDniTraseraTutor2());
-		repositorioUsuario.save(jugador);
-		return jugador;
-	}
+	private JwtUtilidades utilidadesJWT;
 
 	@Override
-	public boolean verificarCredenciales(VerificarUsuarioDTO verificarDTO) {
-		Usuario usuario = repositorioUsuario.findById(verificarDTO.getIdTelefono()).orElseGet(null);
+	public Map<String, Object> verificarCredenciales(String idUsuario, String pass) {
+		Usuario usuario = repositorioUsuario.findById(idUsuario).orElseGet(null);
 		if (usuario == null)
-			return false;
+			return null;
 
-		if (!usuario.getPass().equals(verificarDTO.getPass()))
-			return false;
-		return true;
+		Map<String, Object> claimsUsuario = utilidadesJWT.usuarioAClaims(usuario);
+
+		String tokenJWT = utilidadesJWT.generacionTokenJWT(claimsUsuario);
+		claimsUsuario.put("token", tokenJWT);
+
+		return claimsUsuario;
 	}
 
 	@Override
-	public Usuario descargarInfoUsuarios(String idUsuario) { // TODO DTO de devolver
+	public String darDeAltaJugador(String tel, String nombre, String fechaNac, String email, String pass,
+			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
+			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2) {
+		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac), email, pass, "Jugador", dniDelantera,
+				dniTrasera, emailTutor1, dniDelanteraTutor1, dniTraseraTutor1, emailTutor2, dniDelanteraTutor2,
+				dniTraseraTutor2);
+		repositorioUsuario.save(jugador);
+		return jugador.getTel();
+	}
+
+	@Override
+	public void filtrarJugadores() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public JugadorInfoDTO descargarInfoUsuario(String idUsuario) { 				// TODO DTO de devolver
 		if (idUsuario == null || idUsuario.isEmpty())
 			return null;
 
-		Usuario user = repositorioUsuario.findById(idUsuario).orElse(null);
+		Jugador jugador = (Jugador) repositorioUsuario.findById(idUsuario).orElse(null);
 
-		return user;
+		JugadorInfoDTO dto = new JugadorInfoDTO(jugador.getDniDelantera(), jugador.getDniTrasera(),
+				jugador.getDniDelanteraTutor1(), jugador.getDniTraseraTutor1(), jugador.getDniDelanteraTutor2(),
+				jugador.getDniTraseraTutor2());
+		return dto;
 
+	}
+
+	@Override
+	public Page<EntrenadorDTO> listaEntrenadores() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -92,12 +120,6 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		repositorioUsuario.deleteById(idEntrenador);
 
 		return;
-	}
-
-	@Override
-	public void filtrarJugadores() {
-		// TODO Auto-generated method stub
-
 	}
 
 }
