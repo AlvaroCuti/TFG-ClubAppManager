@@ -5,10 +5,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.umu.springboot.modelo.Entrenador;
+import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
@@ -16,6 +18,7 @@ import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
 import com.umu.springboot.rest.CreacionEntrenadorDTO;
 import com.umu.springboot.rest.CreacionJugadorDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
+import com.umu.springboot.rest.EquipoDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
 import com.umu.springboot.rest.ModificacionEntrenadorDTO;
 import com.umu.springboot.rest.VerificarUsuarioDTO;
@@ -66,7 +69,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	}
 
 	@Override
-	public JugadorInfoDTO descargarInfoUsuario(String idUsuario) { 				// TODO DTO de devolver
+	public JugadorInfoDTO descargarInfoUsuario(String idUsuario) { // TODO DTO de devolver
 		if (idUsuario == null || idUsuario.isEmpty())
 			return null;
 
@@ -80,34 +83,63 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	}
 
 	@Override
-	public Page<EntrenadorDTO> listaEntrenadores() {
+	public Page<EntrenadorDTO> listaEntrenadores(Pageable paginacion) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Entrenador crearEntrenador(CreacionEntrenadorDTO crearEntrenadorDTO) {
-		Entrenador entrenador = new Entrenador(crearEntrenadorDTO.getTel(), crearEntrenadorDTO.getNombre(),
-				crearEntrenadorDTO.getFechaNac(), crearEntrenadorDTO.getEmail(), crearEntrenadorDTO.getPass(),
-				"Entrenador", crearEntrenadorDTO.getDniDelantera(), crearEntrenadorDTO.getDniTrasera(),
-				crearEntrenadorDTO.getCertificadoDelitosSexuales()); // TODO pass generada para los entrenadores
+	public String crearEntrenador(String tel, String nombre, String fechaNac, String email, String pass,
+			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
+
+		if (tel == null || tel.isEmpty())
+			return null;
+
+		if (nombre == null || nombre.isEmpty())
+			return null;
+
+		if (fechaNac == null || fechaNac.isEmpty())
+			return null;
+
+		if (email == null || email.isEmpty())
+			return null;
+
+		if (pass == null || pass.isEmpty())
+			return null;
+
+		if (dniDelantera == null || dniDelantera.isEmpty())
+			return null;
+
+		if (dniTrasera == null || dniTrasera.isEmpty())
+			return null;
+
+		if (certificadoDelitosSexuales == null || certificadoDelitosSexuales.isEmpty())
+			return null;
+
+		Entrenador entrenador = new Entrenador(tel, nombre, LocalDate.parse(fechaNac), email, pass, "Entrenador",
+				dniDelantera, dniTrasera, certificadoDelitosSexuales); // TODO pass generada para los entrenadores
+
 		repositorioUsuario.save(entrenador);
 
-		return entrenador;
+		return entrenador.getTel();
 	}
 
 	@Override
-	public void getEntrenador(String idUsuario) {
+	public EntrenadorDTO getEntrenador(String idUsuario) {
+		if (idUsuario == null || idUsuario.isEmpty())
+			return null;
 
+		Usuario user = repositorioUsuario.findById(idUsuario).orElse(null);
+		EntrenadorDTO dto = new EntrenadorDTO(user.getTel()); // TODO no esta bien
+		return dto;
 	}
 
 	@Override
-	public void modificarEntrenador(ModificacionEntrenadorDTO modificarEntrenadorDTO) {
-		Usuario usuario = repositorioUsuario.findById(modificarEntrenadorDTO.getTel()).orElse(null);
-		((Entrenador) usuario).modificar(modificarEntrenadorDTO.getTel(), modificarEntrenadorDTO.getNombre(),
-				modificarEntrenadorDTO.getFechaNac(), modificarEntrenadorDTO.getEmail(),
-				modificarEntrenadorDTO.getPass(), modificarEntrenadorDTO.getDniDelantera(),
-				modificarEntrenadorDTO.getDniTrasera(), modificarEntrenadorDTO.getCertificadoDelitosSexuales());
+	public void modificarEntrenador(String tel, String nombre, String fechaNac, String email, String pass,
+			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
+		Usuario usuario = repositorioUsuario.findById(tel).orElse(null);
+		((Entrenador) usuario).modificar(tel, nombre, LocalDate.parse(fechaNac), email, pass, dniDelantera, dniTrasera,
+				certificadoDelitosSexuales);
 		repositorioUsuario.save(usuario);
 		return;
 	}

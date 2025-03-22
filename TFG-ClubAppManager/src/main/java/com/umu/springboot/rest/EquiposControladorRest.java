@@ -71,7 +71,7 @@ public class EquiposControladorRest {
 		return equipoDTO;
 	}
 	
-	@PutMapping(value = "/{idEquipo}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('admin)")
 	public ResponseEntity<Void> modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) {
 		servicioEquipo.modificarEquipo(idEquipo, servicioEquipo.dtoToModelEntrenador(modificarEquipoDTO.getEntrenadores()), servicioEquipo.dtoToModelJugador(modificarEquipoDTO.getJugadores()));

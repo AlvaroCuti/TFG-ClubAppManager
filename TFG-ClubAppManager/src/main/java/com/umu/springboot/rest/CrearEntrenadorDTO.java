@@ -1,23 +1,24 @@
 package com.umu.springboot.rest;
 
-import java.time.LocalDate;
-
-public class ModificacionEntrenadorDTO {
+public class CrearEntrenadorDTO {
 	private String tel;
 	private String nombre;
 	private String fechaNac;
 	private String email;
 	private String pass;
-	private String dniDelantera; // TODO
-	private String dniTrasera; // TODO
-	private String certificadoDelitosSexuales; // TODO
+	private String dniDelantera;
+	private String dniTrasera;
+	private String certificadoDelitosSexuales;
 
-	public ModificacionEntrenadorDTO(String tel, String nombre, String fechaNac, String email, String pass,
+	public CrearEntrenadorDTO() {
+	}
+
+	public CrearEntrenadorDTO(String tel, String nombre, String fechaNac, String enamil, String pass,
 			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
 		this.tel = tel;
 		this.nombre = nombre;
 		this.fechaNac = fechaNac;
-		this.email = email;
+		this.enamil = enamil;
 		this.pass = pass;
 		this.dniDelantera = dniDelantera;
 		this.dniTrasera = dniTrasera;
