@@ -13,12 +13,12 @@ public class CrearEntrenadorDTO {
 	public CrearEntrenadorDTO() {
 	}
 
-	public CrearEntrenadorDTO(String tel, String nombre, String fechaNac, String enamil, String pass,
+	public CrearEntrenadorDTO(String tel, String nombre, String fechaNac, String email, String pass,
 			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
 		this.tel = tel;
 		this.nombre = nombre;
 		this.fechaNac = fechaNac;
-		this.enamil = enamil;
+		this.email = email;
 		this.pass = pass;
 		this.dniDelantera = dniDelantera;
 		this.dniTrasera = dniTrasera;

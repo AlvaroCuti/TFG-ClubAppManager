@@ -12,8 +12,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private SecuritySuccessHandler successHandler;
+//	@Autowired
+//	private SecuritySuccessHandler successHandler;
 
 	@Autowired
 	private JwtRequestFilter authenticationRequestFilter;
@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				
 		httpSecurity.httpBasic().disable()
 		.authorizeRequests()
-		.antMatchers("/estaciones/**").permitAll()
+		.antMatchers("/api/usuario/login").permitAll()
 		.and().csrf().disable()
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
