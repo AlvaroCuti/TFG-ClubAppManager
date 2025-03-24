@@ -3,6 +3,8 @@ package com.umu.springboot.rest;
 import java.net.URI;
 import java.time.LocalDateTime;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +29,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.umu.springboot.servicio.IServicioEntrenamiento;
 import com.umu.springboot.servicio.IServicioEquipo;
 
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/equipo")

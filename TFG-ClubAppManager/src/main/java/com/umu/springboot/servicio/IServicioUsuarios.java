@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.umu.springboot.rest.EntrenadorDTO;
+import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
-import com.umu.springboot.rest.ModificacionEntrenadorDTO;
 
 public interface IServicioUsuarios {
 
@@ -17,7 +17,8 @@ public interface IServicioUsuarios {
 			String dniTrasera, String emailTutor1, String dniDelanteraTutor1, String dniTraseraTutor1,
 			String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2);
 
-	void filtrarJugadores();
+	Page<JugadorDTO> filtrarJugadores(String nombre, String tel, String fechaNac, String email, String emailTutor1,
+			String emailTutor2, Pageable paginacion);
 
 	JugadorInfoDTO descargarInfoUsuario(String idUsuario);
 

@@ -10,20 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.umu.springboot.modelo.Entrenador;
-import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
-import com.umu.springboot.rest.CreacionEntrenadorDTO;
-import com.umu.springboot.rest.CreacionJugadorDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
-import com.umu.springboot.rest.EquipoDTO;
+import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
-import com.umu.springboot.rest.ModificacionEntrenadorDTO;
-import com.umu.springboot.rest.VerificarUsuarioDTO;
 
-import io.jsonwebtoken.Claims;
 import utils.JwtUtilidades;
 
 @Service
@@ -55,6 +49,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	public String darDeAltaJugador(String tel, String nombre, String fechaNac, String email, String pass,
 			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
 			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2) {
+
 		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac), email, pass, "Jugador", dniDelantera,
 				dniTrasera, emailTutor1, dniDelanteraTutor1, dniTraseraTutor1, emailTutor2, dniDelanteraTutor2,
 				dniTraseraTutor2);
@@ -63,9 +58,13 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	}
 
 	@Override
-	public void filtrarJugadores() {
-		// TODO Auto-generated method stub
-
+	public Page<JugadorDTO> filtrarJugadores(String nombre, String tel, String fechaNac, String email,
+			String emailTutor1, String emailTutor2, Pageable paginacion) {
+		Page<Usuario> usuarios = repositorioUsuario.filtrarUsuarios(nombre, tel, fechaNac, email, emailTutor1, emailTutor2, paginacion);
+		
+		Page<JugadorDTO> jugadores = usuarios.map(usuario -> new JugadorDTO((Jugador)usuario));
+		
+		return jugadores;
 	}
 
 	@Override
