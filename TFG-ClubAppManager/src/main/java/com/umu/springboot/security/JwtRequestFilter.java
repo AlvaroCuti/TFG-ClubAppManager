@@ -39,6 +39,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
+		String requestURI = request.getRequestURI();
+
+	    // Permitir sin autenticación ciertas rutas
+	    if (requestURI.equals("/api/usuario/login") || requestURI.equals("/api/usuario/register")) {    
+	        filterChain.doFilter(request, response);
+	        return;
+	    }
+		
 		String authHeader = request.getHeader("Authorization");
 		try {
 			if((request.getRequestURI().equals("/auth/login"))) {	
