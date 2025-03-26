@@ -27,7 +27,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
 	@Autowired
 	private RepositorioEquipo repositorioEquipo; // TODO
-	
+
 	@Autowired
 	private RepositorioUsuario repositorioUsuario; // TODO
 
@@ -36,7 +36,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
 	public ServicioUsuarios() {
 	}
-	
+
 	@Override
 	public Map<String, Object> verificarCredenciales(String idUsuario, String pass) {
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElseGet(null);
@@ -56,9 +56,52 @@ public class ServicioUsuarios implements IServicioUsuarios {
 			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
 			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2) {
 
-		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac), email, pass, "Jugador", dniDelantera,
+		if (tel == null || tel.isEmpty())
+			throw new IllegalArgumentException("tel: no debe ser nulo ni vacio");
+
+		if (nombre == null || nombre.isEmpty())
+			throw new IllegalArgumentException("nombre: no debe ser negativo");
+
+		if (fechaNac == null || fechaNac.isEmpty())
+			throw new IllegalArgumentException("fechaNac: no debe ser negativo");
+
+		if (email == null || email.isEmpty())
+			throw new IllegalArgumentException("email: no debe ser negativo");
+
+		if (pass == null || pass.isEmpty())
+			throw new IllegalArgumentException("pass: no debe ser negativo");
+		
+		if (dniDelantera == null || dniDelantera.isEmpty())
+			throw new IllegalArgumentException("dniDelantera: no debe ser negativo");
+		
+		if (dniTrasera == null || dniTrasera.isEmpty())
+			throw new IllegalArgumentException("dniTrasera: no debe ser negativo");
+		
+		if (emailTutor1 == null || emailTutor1.isEmpty())
+			throw new IllegalArgumentException("emailTutor1: no debe ser negativo");
+		
+		if (dniDelanteraTutor1 == null || dniDelanteraTutor1.isEmpty())
+			throw new IllegalArgumentException("dniDelanteraTutor1: no debe ser negativo");
+		
+		if (dniTraseraTutor1 == null || dniTraseraTutor1.isEmpty())
+			throw new IllegalArgumentException("dniTraseraTutor1: no debe ser negativo");
+		
+		if (emailTutor2 == null || emailTutor2.isEmpty())
+			throw new IllegalArgumentException("emailTutor2: no debe ser negativo");
+		
+		if (dniDelanteraTutor2 == null || dniDelanteraTutor2.isEmpty())
+			throw new IllegalArgumentException("dniDelanteraTutor2: no debe ser negativo");
+
+		if (dniTraseraTutor2 == null || dniTraseraTutor2.isEmpty())
+			throw new IllegalArgumentException("dniTraseraTutor2: no debe ser negativo");
+
+		if (repositorioUsuario.existsById(tel))
+			return null;
+		
+		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac), email, pass, "JUGADOR", dniDelantera,
 				dniTrasera, emailTutor1, dniDelanteraTutor1, dniTraseraTutor1, emailTutor2, dniDelanteraTutor2,
 				dniTraseraTutor2);
+		
 		repositorioUsuario.save(jugador);
 		return jugador.getTel();
 	}
@@ -66,10 +109,11 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	@Override
 	public Page<JugadorDTO> filtrarJugadores(String nombre, String tel, String fechaNac, String email,
 			String emailTutor1, String emailTutor2, Pageable paginacion) {
-		Page<Usuario> usuarios = repositorioUsuario.filtrarUsuarios(nombre, tel, fechaNac, email, emailTutor1, emailTutor2, paginacion);
-		
-		Page<JugadorDTO> jugadores = usuarios.map(usuario -> new JugadorDTO((Jugador)usuario));
-		
+		Page<Usuario> usuarios = repositorioUsuario.filtrarUsuarios(nombre, tel, fechaNac, email, emailTutor1,
+				emailTutor2, paginacion);
+
+		Page<JugadorDTO> jugadores = usuarios.map(usuario -> new JugadorDTO((Jugador) usuario));
+
 		return jugadores;
 	}
 

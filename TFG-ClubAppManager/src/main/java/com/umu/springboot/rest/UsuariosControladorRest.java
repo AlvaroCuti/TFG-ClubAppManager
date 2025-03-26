@@ -55,6 +55,9 @@ public class UsuariosControladorRest {
 				creacionDTO.getDniTrasera(), creacionDTO.getEmailTutor1(), creacionDTO.getDniDelanteraTutor1(),
 				creacionDTO.getDniTraseraTutor1(), creacionDTO.getEmailTutor2(), creacionDTO.getDniDelanteraTutor2(),
 				creacionDTO.getDniTraseraTutor2());
+		if(idUsuario == null)
+			return ResponseEntity.badRequest().build();
+			
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idUsuario}").buildAndExpand(idUsuario)
 				.toUri();
 
