@@ -24,6 +24,9 @@ public class CreacionEntrenadorDTO {
 		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
 	}
 
+	public CreacionEntrenadorDTO() {
+	}
+	
 	public String getTel() {
 		return tel;
 	}

@@ -13,24 +13,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//	@Autowired
-//	private SecuritySuccessHandler successHandler;
+	@Autowired
+	private SecuritySuccessHandler successHandler;
 
 	@Autowired
 	private JwtRequestFilter authenticationRequestFilter;
 
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
-				
 		httpSecurity.httpBasic().disable()
-	    .csrf().disable()
-	    .authorizeRequests()
-	    .antMatchers("/api/usuario/register").permitAll() // Permitidos sin autenticación
-	    .anyRequest().authenticated() // Todo lo demás requiere autenticación
-	    .and()
-	    .sessionManagement()
-	    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        .cors().and()
+        .csrf().disable() 
+	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+	        .and()
+	        .authorizeRequests()
+	        .antMatchers(HttpMethod.POST, "/api/usuario/register").permitAll()
+	        .anyRequest().authenticated();
 
+	    // Ensure the JWT filter is added before UsernamePasswordAuthenticationFilter
+	    httpSecurity.addFilterBefore(authenticationRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
+
 
 }

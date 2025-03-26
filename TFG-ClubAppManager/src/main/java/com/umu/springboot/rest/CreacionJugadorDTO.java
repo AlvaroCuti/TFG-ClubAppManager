@@ -37,6 +37,9 @@ public class CreacionJugadorDTO {
 		this.dniDelanteraTutor2 = dniDelanteraTutor2;
 		this.dniTraseraTutor2 = dniTraseraTutor2;
 	}
+	
+	public CreacionJugadorDTO() {
+	}
 
 	public String getTel() {
 		return tel;

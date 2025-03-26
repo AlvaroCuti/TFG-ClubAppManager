@@ -3,10 +3,13 @@ package com.umu.springboot.rest;
 public class VerificarUsuarioDTO {
 	private String idTelefono;
 	private String pass;
-	
+
 	public VerificarUsuarioDTO(String idTelefono, String pass) {
 		this.idTelefono = idTelefono;
 		this.pass = pass;
+	}
+
+	public VerificarUsuarioDTO() {
 	}
 
 	public String getIdTelefono() {

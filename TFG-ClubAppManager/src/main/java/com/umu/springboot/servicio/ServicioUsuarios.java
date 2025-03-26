@@ -12,25 +12,31 @@ import org.springframework.transaction.annotation.Transactional;
 import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
+import com.umu.springboot.repositorios.RepositorioEquipo;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
+import com.umu.springboot.repositorios.RepositorioUsuario;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
-
-import utils.JwtUtilidades;
+import com.umu.springboot.utils.JwtUtilidades;
 
 @Service
 @Transactional
 public class ServicioUsuarios implements IServicioUsuarios {
 
 	@Autowired
-	private RepositorioEquipoMongo repositorioEquipo; // TODO
+	private RepositorioEquipo repositorioEquipo; // TODO
+	
 	@Autowired
-	private RepositorioUsuarioMongo repositorioUsuario; // TODO
+	private RepositorioUsuario repositorioUsuario; // TODO
 
+	@Autowired
 	private JwtUtilidades utilidadesJWT;
 
+	public ServicioUsuarios() {
+	}
+	
 	@Override
 	public Map<String, Object> verificarCredenciales(String idUsuario, String pass) {
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElseGet(null);

@@ -80,7 +80,7 @@ public class EquiposControladorRest {
 	}	
 	
 	@DeleteMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('admin)")
+	@PreAuthorize("hasAuthority('admin')")
 	public ResponseEntity<Void> borrarEquipo(@PathVariable String idEquipo) {
 		servicioEquipo.borrarEquipo(idEquipo);
 		return ResponseEntity.noContent().build();

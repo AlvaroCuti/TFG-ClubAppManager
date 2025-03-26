@@ -31,6 +31,9 @@ public class JugadorDTO {
 		this.emailTutor1 = jugador.getEmailTutor2();
 	}
 
+	public JugadorDTO() {
+	}
+	
 	public String getTel() {
 		return tel;
 	}

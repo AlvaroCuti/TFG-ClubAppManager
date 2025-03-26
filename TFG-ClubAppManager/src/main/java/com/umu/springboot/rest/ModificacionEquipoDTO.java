@@ -12,7 +12,6 @@ public class ModificacionEquipoDTO {
 	}
 
 	public ModificacionEquipoDTO() {
-		super();
 	}
 
 	public List<EntrenadorDTO> getEntrenadores() {

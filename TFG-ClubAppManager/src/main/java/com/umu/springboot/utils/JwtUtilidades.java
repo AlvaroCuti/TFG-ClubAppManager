@@ -1,9 +1,11 @@
-package utils;
+package com.umu.springboot.utils;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
 
 import com.umu.springboot.modelo.Usuario;
 
@@ -11,6 +13,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+@Component
 public class JwtUtilidades {
 	private static final String SECRET_KEY = "TFG_CLUB_APP";
 	private static final int tiempoExpiracion = 7200;
