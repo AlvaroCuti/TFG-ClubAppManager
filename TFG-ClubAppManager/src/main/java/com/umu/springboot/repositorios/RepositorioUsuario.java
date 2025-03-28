@@ -9,6 +9,9 @@ import com.umu.springboot.modelo.Usuario;
 
 @NoRepositoryBean
 public interface RepositorioUsuario extends PagingAndSortingRepository<Usuario, String>{
+	
 	Page<Usuario> filtrarUsuarios(String nombre, String tel, String fechaNac, String email, String emailTutor1,
 			String emailTutor2, Pageable pageable);
+	
+	Page<Usuario> findByRol(String rol, Pageable paginacion);
 }

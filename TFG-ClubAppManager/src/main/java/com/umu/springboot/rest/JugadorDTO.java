@@ -28,7 +28,7 @@ public class JugadorDTO {
 		this.fechaNac = jugador.getFechaNac();
 		this.email = jugador.getEmail();
 		this.emailTutor1 = jugador.getEmailTutor1();
-		this.emailTutor1 = jugador.getEmailTutor2();
+		this.emailTutor2 = jugador.getEmailTutor2();
 	}
 
 	public JugadorDTO() {

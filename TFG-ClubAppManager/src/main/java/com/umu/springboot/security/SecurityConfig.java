@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        .and()
 	        .authorizeRequests()
 	        .antMatchers(HttpMethod.POST, "/api/usuario/register").permitAll()
+	        .antMatchers(HttpMethod.POST, "/api/usuario/login").permitAll()
 	        .anyRequest().authenticated();
 
 	    // Ensure the JWT filter is added before UsernamePasswordAuthenticationFilter

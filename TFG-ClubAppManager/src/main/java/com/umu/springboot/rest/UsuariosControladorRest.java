@@ -1,6 +1,7 @@
 package com.umu.springboot.rest;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -12,10 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +38,7 @@ public class UsuariosControladorRest {
 	private IServicioUsuarios servicioUsuarios;
 
 	@Autowired
-	private PagedResourcesAssembler<EntrenadorDTO> pagedResourcesAssembler1;
+	private PagedResourcesAssembler<EntrenadorCompletoDTO> pagedResourcesAssembler1;
 	
 	@Autowired
 	private PagedResourcesAssembler<JugadorDTO> pagedResourcesAssembler2;
@@ -45,6 +47,12 @@ public class UsuariosControladorRest {
 	public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody AutenticarUsuarioDTO autenticacionDTO) {
 		Map<String, Object> c = servicioUsuarios.verificarCredenciales(autenticacionDTO.getTel(),
 				autenticacionDTO.getPass());
+		if(c == null) {
+			Map<String, Object> errorResponse = new HashMap<>();
+	        errorResponse.put("error", "Unauthorized");
+	        errorResponse.put("message", "Credenciales incorrectas");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+		}
 		return ResponseEntity.ok(c);
 	}
 
@@ -64,7 +72,7 @@ public class UsuariosControladorRest {
 		return ResponseEntity.created(url).build();
 	}
 
-	@GetMapping(value = "/usuario", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/usuario")
 	public PagedModel<EntityModel<JugadorDTO>> filtrarJugadores(@RequestParam(required = false) String nombre,
 			@RequestParam(required = false) String tel, @RequestParam(required = false) String fechaNac,
 			@RequestParam(required = false) String email, @RequestParam(required = false) String emailTutor1,
@@ -81,16 +89,17 @@ public class UsuariosControladorRest {
 
 	@GetMapping(value = "/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public JugadorInfoDTO getInfoJugador(@PathVariable String idUsuario) {
-		return servicioUsuarios.descargarInfoUsuario(idUsuario);
+		JugadorInfoDTO dto = servicioUsuarios.descargarInfoUsuario(idUsuario);
+		return dto;
 	}
 
-	@GetMapping(value = "/entrenador", produces = MediaType.APPLICATION_JSON_VALUE)
-	public PagedModel<EntityModel<EntrenadorDTO>> getListadoEntrenadores(@RequestParam int page,
+	@GetMapping(value = "/entrenador", produces = MediaType.APPLICATION_JSON_VALUE)					
+	public PagedModel<EntityModel<EntrenadorCompletoDTO>> getListadoEntrenadores(@RequestParam int page,
 			@RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
-		Page<EntrenadorDTO> listaEntrenadoresDTO = servicioUsuarios.listaEntrenadores(paginacion);
+		Page<EntrenadorCompletoDTO> listaEntrenadoresDTO = servicioUsuarios.listaEntrenadores(paginacion);
 		return this.pagedResourcesAssembler1.toModel(listaEntrenadoresDTO, entrenador -> {
-			EntityModel<EntrenadorDTO> model = EntityModel.of(entrenador);
+			EntityModel<EntrenadorCompletoDTO> model = EntityModel.of(entrenador);
 			return model;
 		});
 	}
@@ -101,30 +110,39 @@ public class UsuariosControladorRest {
 				crearEntrenadorDTO.getNombre(), crearEntrenadorDTO.getFechaNac(), crearEntrenadorDTO.getEmail(),
 				crearEntrenadorDTO.getPass(), crearEntrenadorDTO.getDniDelantera(), crearEntrenadorDTO.getDniTrasera(),
 				crearEntrenadorDTO.getCertificadoDelitosSexuales());
+		if(idEntrenador == null)
+			return ResponseEntity.badRequest().build();
+		
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenador}").buildAndExpand(idEntrenador)
 				.toUri();
 		return ResponseEntity.created(url).build();
 	}
 
-	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public EntrenadorDTO getEntrenador(@PathVariable String idUsuario) {
-		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idUsuario);
+	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE)			//TODO cambiar DTO que devuelve
+	public EntrenadorDTO getInfoEntrenador(@PathVariable String idEntrenador) {
+		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
 		return dto;
 	}
 
 	@PutMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idUsuario,
+	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
 			@Valid @RequestBody ModificacionEntrenadorDTO modificarEntrenadorDTO) {
-		servicioUsuarios.modificarEntrenador(modificarEntrenadorDTO.getTel(), modificarEntrenadorDTO.getNombre(),
+		servicioUsuarios.modificarEntrenador(idEntrenador, modificarEntrenadorDTO.getTel(), modificarEntrenadorDTO.getNombre(),
 				modificarEntrenadorDTO.getFechaNac(), modificarEntrenadorDTO.getEmail(),
 				modificarEntrenadorDTO.getPass(), modificarEntrenadorDTO.getDniDelantera(),
 				modificarEntrenadorDTO.getDniTrasera(), modificarEntrenadorDTO.getCertificadoDelitosSexuales());
 		return ResponseEntity.noContent().build();
 	}
 
-	@DeleteMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> borrarEntrenador(@PathVariable String idUsuario) {
-		servicioUsuarios.borrarEntrenador(idUsuario);
+	@DeleteMapping(value = "/entrenador/{idEntrenador}")
+	public ResponseEntity<Void> borrarEntrenador(@PathVariable String idEntrenador) {
+		servicioUsuarios.borrarEntrenador(idEntrenador);
 		return ResponseEntity.noContent().build();
 	}
+	
+	
+//	@ExceptionHandler(IllegalArgumentException.class)										//TODO REVISAR
+//	public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+//	    return ResponseEntity.badRequest().body(ex.getMessage());
+//	}
 }

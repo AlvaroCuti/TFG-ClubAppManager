@@ -45,14 +45,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		String authHeader = request.getHeader("Authorization");
+		String authorization = request.getHeader("Authorization");
 		try {
-			if ((request.getRequestURI().equals("/auth/login"))) {
-				filterChain.doFilter(request, response);
-				return;
-			} else {
 				Claims claims;
-				String authorization = request.getHeader("Authorization");
 				if (authorization == null || !authorization.startsWith("Bearer ")) { // NO tiene el formato correcto JWT
 					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token JWT no valido");
 					return;
@@ -74,8 +69,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
 				filterChain.doFilter(request, response);
-			}
-			filterChain.doFilter(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
