@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ModificacionEquipoDTO {
 	private List<EntrenadorDTO> entrenadores;
-	private List<JugadorDTO> jugadores;
+	private List<JugadorIdDTO> jugadores;
 
-	public ModificacionEquipoDTO(List<EntrenadorDTO> entrenadores, List<JugadorDTO> jugadores) {
+	public ModificacionEquipoDTO(List<EntrenadorDTO> entrenadores, List<JugadorIdDTO> jugadores) {
 		this.entrenadores = entrenadores;
 		this.jugadores = jugadores;
 	}
@@ -22,11 +22,11 @@ public class ModificacionEquipoDTO {
 		this.entrenadores = entrenadores;
 	}
 
-	public List<JugadorDTO> getJugadores() {
+	public List<JugadorIdDTO> getJugadores() {
 		return jugadores;
 	}
 
-	public void setJugadores(List<JugadorDTO> jugadores) {
+	public void setJugadores(List<JugadorIdDTO> jugadores) {
 		this.jugadores = jugadores;
 	}
 

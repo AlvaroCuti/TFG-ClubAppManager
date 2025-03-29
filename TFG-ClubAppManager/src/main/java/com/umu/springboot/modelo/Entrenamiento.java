@@ -1,6 +1,7 @@
 package com.umu.springboot.modelo;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -19,7 +20,7 @@ public class Entrenamiento implements Identificable {
 	public Entrenamiento(LocalDateTime horario, String lugar) {
 		this.horario = horario;
 		this.lugar = lugar;
-		this.asistencias = null;
+		this.asistencias = new LinkedList<>();
 	}
 
 	public LocalDateTime getHorario() {
@@ -46,6 +47,10 @@ public class Entrenamiento implements Identificable {
 		this.asistencias = asistencias;
 	}
 
+	public void añadirAsistencias(Asistencia asistencia) {
+		this.asistencias.add(asistencia);
+	}
+	
 	@Override
 	public String getId() {
 		return idEntrenamiento;

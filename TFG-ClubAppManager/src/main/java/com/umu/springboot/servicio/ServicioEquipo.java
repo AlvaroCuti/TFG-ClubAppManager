@@ -19,6 +19,7 @@ import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.EquipoDTO;
 import com.umu.springboot.rest.JugadorDTO;
+import com.umu.springboot.rest.JugadorIdDTO;
 
 @Service
 @Transactional
@@ -34,9 +35,14 @@ public class ServicioEquipo implements IServicioEquipo {
 	public Page<EquipoDTO> listarEquipos(Pageable paginacion) {
 		return repositorioEquipo.findAll(paginacion).map((Equipo e) -> {
 			EquipoDTO equipoDTO = new EquipoDTO();
+			int numJugadores = (e.getJugadores() != null) ? e.getJugadores().size() : 0;
+		    String entrenadores = e.getEntrenadores().stream()
+		    	        .map(Entrenador::getNombre) 
+		    	        .collect(Collectors.joining(", "));
+		    
 			equipoDTO.setIdEquipo(e.getId());
-			equipoDTO.setEntrenadores(e.getEntrenadores().toString());
-			equipoDTO.setNumeroJugadores(Integer.toString(e.getJugadores().size()));
+			equipoDTO.setEntrenadores(entrenadores);
+			equipoDTO.setNumeroJugadores(Integer.toString(numJugadores));
 			return equipoDTO;
 		});
 	}
@@ -61,7 +67,7 @@ public class ServicioEquipo implements IServicioEquipo {
 	@Override
 	public String crearEquipo(List<Usuario> usuarios) {
 
-		if (usuarios == null || usuarios.isEmpty())
+		if (usuarios == null || usuarios.isEmpty() || usuarios.contains(null))
 			return null;
 
 		Equipo equipo = new Equipo(usuarios.stream().map(Entrenador.class::cast).collect(Collectors.toList()));
@@ -78,15 +84,29 @@ public class ServicioEquipo implements IServicioEquipo {
 			return null;
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
-		EquipoDTO dto = new EquipoDTO(idEquipo, Integer.toString(equipo.getJugadores().size()),
-				equipo.getEntrenadores().toString());
+		
+	    int numJugadores = (equipo.getJugadores() != null) ? equipo.getJugadores().size() : 0;
+
+	    String entrenadores = equipo.getEntrenadores().stream()
+	    	        .map(Entrenador::getNombre) 
+	    	        .collect(Collectors.joining(", "));
+	    
+	    EquipoDTO dto = new EquipoDTO(idEquipo, Integer.toString(numJugadores),
+				entrenadores);
 		return dto;
 
 	}
 
 	@Override
 	public void modificarEquipo(String idEquipo, List<Usuario> entrenadores, List<Usuario> jugadores) {
+		
 		if (idEquipo == null || idEquipo.isEmpty())
+			return;
+		
+		if (entrenadores == null || entrenadores.isEmpty() || entrenadores.contains(null))
+			return;
+
+		if (jugadores == null || jugadores.isEmpty() || jugadores.contains(null))
 			return;
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
@@ -111,14 +131,17 @@ public class ServicioEquipo implements IServicioEquipo {
 	public List<Usuario> dtoToModelEntrenador(List<EntrenadorDTO> entrenadoresDTO) {
 		List<Usuario> entrenadores = new LinkedList<Usuario>();
 		for (EntrenadorDTO entrenador : entrenadoresDTO) {
-			entrenadores.add(repositorioUsuario.findById(entrenador.getTel()).orElse(null));
+			Usuario user = repositorioUsuario.findById(entrenador.getTel()).orElse(null);
+			if(!user.getRol().equals("ENTRENADOR"))
+				user = null;
+			entrenadores.add(user);
 		}
 		return entrenadores;
 	}
 
-	public List<Usuario> dtoToModelJugador(List<JugadorDTO> jugadoresDTO) {
+	public List<Usuario> dtoToModelJugador(List<JugadorIdDTO> jugadoresDTO) {
 		List<Usuario> jugadores = new LinkedList<Usuario>();
-		for (JugadorDTO jugador : jugadoresDTO) {
+		for (JugadorIdDTO jugador : jugadoresDTO) {
 			jugadores.add(repositorioUsuario.findById(jugador.getTel()).orElse(null));
 		}
 		return jugadores;

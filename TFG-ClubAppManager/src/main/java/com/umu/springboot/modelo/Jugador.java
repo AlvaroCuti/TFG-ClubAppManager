@@ -1,6 +1,7 @@
 package com.umu.springboot.modelo;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Jugador extends Usuario {
@@ -30,7 +31,7 @@ public class Jugador extends Usuario {
 		this.emailTutor2 = emailTutor2;
 		this.dniDelanteraTutor2 = dniDelanteraTutor2;
 		this.dniTraseraTutor2 = dniTraseraTutor2;
-		this.asistencias = null;
+		this.asistencias = new LinkedList<>();
 	}
 
 	public List<Asistencia> getAsistencias() {
@@ -103,6 +104,10 @@ public class Jugador extends Usuario {
 
 	public void setDniTraseraTutor2(String dniTraseraTutor2) {
 		this.dniTraseraTutor2 = dniTraseraTutor2;
+	}
+
+	public void añadirAsistencia(Asistencia asistencia) {
+		this.asistencias.add(asistencia);
 	}
 
 }

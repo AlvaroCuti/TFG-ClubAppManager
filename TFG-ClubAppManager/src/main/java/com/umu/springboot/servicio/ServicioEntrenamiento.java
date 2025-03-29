@@ -9,8 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.umu.springboot.modelo.Asistencia;
 import com.umu.springboot.modelo.Entrenamiento;
 import com.umu.springboot.modelo.Equipo;
+import com.umu.springboot.modelo.Jugador;
+import com.umu.springboot.modelo.Usuario;
 import com.umu.springboot.repositorios.RepositorioEntrenamientoMongo;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
@@ -42,8 +45,11 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 			entrenamientoDTO.setIdEntrenamiento(e.getId());
 			entrenamientoDTO.setLugar(e.getLugar());
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+			
+			int numAsistencias = (e.getAsistencias() != null) ? e.getAsistencias().size() : 0;
+			
 			entrenamientoDTO.setHorario((e.getHorario().format(formatter)));
-			entrenamientoDTO.setNumAsistencias(Integer.toString(e.getAsistencias().size()));
+			entrenamientoDTO.setNumAsistencias(Integer.toString(numAsistencias));
 			return entrenamientoDTO;
 		});
 		
@@ -55,6 +61,9 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 			return null;
 		
 		if (fecha == null)
+			return null;
+		
+		if ((lugar == null) || (lugar.isEmpty()))
 			return null;
 		
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
@@ -72,8 +81,33 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	}
 
 	@Override
-	public void confirmarAsistencia(String idEquipo, String idUsuario) {
-		//TODO Seria necesario un repositorio de entrenamientos????
+	public void confirmarAsistencia(String idEntrenamiento, String idUsuario) {
+		
+		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
+			return;
+		
+		if ((idUsuario == null) || (idUsuario.isEmpty()))
+			return;
+	
+		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
+		if(entrenamiento == null)
+			return;
+		
+		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+		if(usuario == null)
+			return;
+		
+		Asistencia asistencia = new Asistencia(true);
+		
+		entrenamiento.añadirAsistencias(asistencia);
+		((Jugador)usuario).añadirAsistencia(asistencia);
+		
+		repositorioEntrenamiento.save(entrenamiento);
+		repositorioUsuario.save(usuario);
+		
+		return;
+		
+		
 	}
 
 }

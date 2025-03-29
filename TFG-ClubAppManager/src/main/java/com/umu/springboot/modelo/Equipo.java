@@ -1,5 +1,6 @@
 package com.umu.springboot.modelo;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -19,14 +20,17 @@ public class Equipo implements Identificable {
 		this.idEquipo = null;
 		this.jugadores = jugadores;
 		this.entrenadores = entrenadores;
-		this.entrenamientos = null;
+		this.entrenamientos = new LinkedList<Entrenamiento>();
 	}
 
 	public Equipo(List<Entrenador> entrenadores) {
 		this.idEquipo = null;
-		this.jugadores = null;
+		this.jugadores = new LinkedList<Jugador>();
 		this.entrenadores = entrenadores;
-		this.entrenamientos = null;
+		this.entrenamientos = new LinkedList<Entrenamiento>();
+	}
+
+	public Equipo() {
 	}
 
 	public List<Jugador> getJugadores() {
@@ -54,9 +58,9 @@ public class Equipo implements Identificable {
 	}
 
 	public void addEntrenamiento(Entrenamiento entrenamiento) {
-
+		this.entrenamientos.add(entrenamiento);
 	}
-	
+
 	public void modificar(List<Entrenador> entrenadores, List<Jugador> jugadores) {
 		this.entrenadores = entrenadores;
 		this.jugadores = jugadores;

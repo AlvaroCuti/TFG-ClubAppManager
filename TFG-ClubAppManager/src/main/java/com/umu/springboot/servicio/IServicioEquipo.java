@@ -10,7 +10,7 @@ import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.EquipoDTO;
-import com.umu.springboot.rest.JugadorDTO;
+import com.umu.springboot.rest.JugadorIdDTO;
 
 public interface IServicioEquipo {
 	
@@ -28,6 +28,6 @@ public interface IServicioEquipo {
 		
 	public List<Usuario> dtoToModelEntrenador (List<EntrenadorDTO> entrenadoresDTO);	
 	
-	public List<Usuario> dtoToModelJugador (List<JugadorDTO> jugadoresDTO);		
+	public List<Usuario> dtoToModelJugador (List<JugadorIdDTO> jugadoresDTO);		
 
 }

@@ -45,7 +45,6 @@ public class EquiposControladorRest {
 	private PagedResourcesAssembler<EntrenamientoDTO> pagedResourcesAssembler2;
 	
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('admin')")
 	public PagedModel<EntityModel<EquipoDTO>> getListadoEquipo(@RequestParam int page, @RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
 		
@@ -58,36 +57,33 @@ public class EquiposControladorRest {
 	}
 
 	@PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)			
-	@PreAuthorize("hasAuthority('admin')")
 	public ResponseEntity<Void> crearEquipo(@Valid @RequestBody CreacionEquipoDTO crearEquipoDTO) {	
 		String idEquipo = servicioEquipo.crearEquipo(servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
+		if(idEquipo == null)
+			return ResponseEntity.badRequest().build();
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEquipo}").buildAndExpand(idEquipo).toUri();
 		return ResponseEntity.created(url).build();
 	}
 
 	@GetMapping(value = "/{idEquipo}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('admin')")
 	public EquipoDTO getInfoEquipo(@PathVariable String idEquipo) {
 		EquipoDTO equipoDTO = servicioEquipo.getEquipo(idEquipo);
 		return equipoDTO;
 	}
 	
 	@PutMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('admin')")
 	public ResponseEntity<Void> modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) {
 		servicioEquipo.modificarEquipo(idEquipo, servicioEquipo.dtoToModelEntrenador(modificarEquipoDTO.getEntrenadores()), servicioEquipo.dtoToModelJugador(modificarEquipoDTO.getJugadores()));
 		return ResponseEntity.noContent().build();
 	}	
 	
-	@DeleteMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('admin')")
+	@DeleteMapping(value = "/{idEquipo}")
 	public ResponseEntity<Void> borrarEquipo(@PathVariable String idEquipo) {
 		servicioEquipo.borrarEquipo(idEquipo);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping(value = "/{idEquipo}/entrenamiento", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('entrenador')")
 	public PagedModel<EntityModel<EntrenamientoDTO>> listarEntrenamientos(@PathVariable String idEquipo, @RequestParam int page, @RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
 		Page<EntrenamientoDTO> listaEntrenamientosDTO = servicioEntrenamiento.listarEntrenamientos(idEquipo, paginacion);
@@ -98,17 +94,17 @@ public class EquiposControladorRest {
 	}
 	
 	@PostMapping(value = "/{idEquipo}/entrenamiento", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('entrenador')")
 	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo, @Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) {
 		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, LocalDateTime.parse(programarEntrenamientoDTO.getFecha()), programarEntrenamientoDTO.getLugar());
+		if(idEntrenamiento == null)
+			return ResponseEntity.badRequest().build();
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}").buildAndExpand(idEntrenamiento).toUri();
 		return ResponseEntity.created(url).build();
 	}
 	
-	@PutMapping(value = "/{idEquipo}/entrenamiento/{idEntrenamiento}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAuthority('entrenador')")
-	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEquipo, @PathVariable String idUsuario) {
-		servicioEntrenamiento.confirmarAsistencia(idUsuario, idEquipo);
+	@PutMapping(value = "/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEntrenamiento, @PathVariable String idUsuario) {
+		servicioEntrenamiento.confirmarAsistencia(idEntrenamiento, idUsuario);
 		return ResponseEntity.noContent().build();
 	}
 	

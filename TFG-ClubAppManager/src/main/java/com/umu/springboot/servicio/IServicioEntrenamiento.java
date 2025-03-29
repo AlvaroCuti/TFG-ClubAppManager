@@ -15,5 +15,5 @@ public interface IServicioEntrenamiento {
 	
 	String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar);
 	
-	void confirmarAsistencia(String idEquipo, String idUsuario);
+	void confirmarAsistencia(String idEntrenamiento, String idUsuario);
 }
