@@ -1,18 +1,31 @@
 package com.umu.springboot.modelo;
 
 public class Asistencia {
-	private boolean confirmacion;
+	private String idJugador;
+	private String idEntrenamiento;
 
-	public Asistencia(boolean confirmacion) {
-		this.confirmacion = confirmacion;
+	public Asistencia() {
 	}
 
-	public boolean isConfirmacion() {
-		return confirmacion;
+	public Asistencia(String idJugador, String idEntrenamiento) {
+		this.idJugador = idJugador;
+		this.idEntrenamiento = idEntrenamiento;
 	}
 
-	public void setConfirmacion(boolean confirmacion) {
-		this.confirmacion = confirmacion;
+	public String getIdJugador() {
+		return idJugador;
+	}
+
+	public void setIdJugador(String idJugador) {
+		this.idJugador = idJugador;
+	}
+
+	public String getIdEntrenamiento() {
+		return idEntrenamiento;
+	}
+
+	public void setIdEntrenamiento(String idEntrenamiento) {
+		this.idEntrenamiento = idEntrenamiento;
 	}
 
 }

@@ -97,7 +97,7 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		if(usuario == null)
 			return;
 		
-		Asistencia asistencia = new Asistencia(true);
+		Asistencia asistencia = new Asistencia(idUsuario, idEntrenamiento);
 		
 		entrenamiento.añadirAsistencias(asistencia);
 		((Jugador)usuario).añadirAsistencia(asistencia);
@@ -106,7 +106,6 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		repositorioUsuario.save(usuario);
 		
 		return;
-		
 		
 	}
 
