@@ -24,89 +24,93 @@ import com.umu.springboot.rest.EntrenamientoDTO;
 public class ServicioEntrenamiento implements IServicioEntrenamiento {
 
 	@Autowired
-	private RepositorioEquipoMongo repositorioEquipo;			//TODO
+	private RepositorioEquipoMongo repositorioEquipo; // TODO
 	@Autowired
-	private RepositorioUsuarioMongo repositorioUsuario;			//TODO
+	private RepositorioUsuarioMongo repositorioUsuario; // TODO
 	@Autowired
-	private RepositorioEntrenamientoMongo repositorioEntrenamiento;			//TODO
-	
+	private RepositorioEntrenamientoMongo repositorioEntrenamiento; // TODO
+
 	@Override
 	public Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion) {
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
 			return null;
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
-		
-		if(equipo == null)
+
+		if (equipo == null)
 			return null;
-		
+
 		return repositorioEntrenamiento.findAll(paginacion).map((Entrenamiento e) -> {
 			EntrenamientoDTO entrenamientoDTO = new EntrenamientoDTO();
 			entrenamientoDTO.setIdEntrenamiento(e.getId());
 			entrenamientoDTO.setLugar(e.getLugar());
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-			
+
 			int numAsistencias = (e.getAsistencias() != null) ? e.getAsistencias().size() : 0;
-			
+
 			entrenamientoDTO.setHorario((e.getHorario().format(formatter)));
 			entrenamientoDTO.setNumAsistencias(Integer.toString(numAsistencias));
 			return entrenamientoDTO;
 		});
-		
+
 	}
-	
+
 	@Override
 	public String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar) {
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
 			return null;
-		
+
 		if (fecha == null)
 			return null;
-		
+
 		if ((lugar == null) || (lugar.isEmpty()))
 			return null;
-		
+
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
-		
-		if(equipo == null)
+
+		if (equipo == null)
 			return null;
-			
+
 		Entrenamiento entrenamiento = new Entrenamiento(fecha, lugar);
-		
-		equipo.addEntrenamiento(entrenamiento);	
-		
+
+		equipo.addEntrenamiento(entrenamiento);
+
 		String idEntrenamiento = repositorioEntrenamiento.save(entrenamiento).getId();
-		
+
 		return idEntrenamiento;
 	}
 
 	@Override
 	public void confirmarAsistencia(String idEntrenamiento, String idUsuario) {
-		
+
 		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
 			return;
-		
+
 		if ((idUsuario == null) || (idUsuario.isEmpty()))
 			return;
-	
+
 		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
-		if(entrenamiento == null)
+		if (entrenamiento == null)
 			return;
-		
+
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
-		if(usuario == null)
+		if (usuario == null)
 			return;
-		
+
 		Asistencia asistencia = new Asistencia(idUsuario, idEntrenamiento);
-		
-		entrenamiento.añadirAsistencias(asistencia);
-		((Jugador)usuario).añadirAsistencia(asistencia);
-		
+
+		if ((entrenamiento.comprobarAsistencia(asistencia)) && (((Jugador) usuario).comprobarAsistencia(asistencia))) {
+			entrenamiento.añadirAsistencias(asistencia);
+			((Jugador) usuario).añadirAsistencia(asistencia);
+		}else {
+			return;
+		}
+
 		repositorioEntrenamiento.save(entrenamiento);
 		repositorioUsuario.save(usuario);
-		
+
 		return;
-		
+
 	}
 
 }

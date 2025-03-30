@@ -50,7 +50,16 @@ public class Entrenamiento implements Identificable {
 	public void añadirAsistencias(Asistencia asistencia) {
 		this.asistencias.add(asistencia);
 	}
-	
+
+	public boolean comprobarAsistencia(Asistencia asistencia) {
+		for (Asistencia a : asistencias) {
+			if ((a.getIdEntrenamiento().equals(asistencia.getIdEntrenamiento()))
+					&& (a.getIdJugador().equals(asistencia.getIdJugador())))
+				return false;
+		}
+		return true;
+	}
+
 	@Override
 	public String getId() {
 		return idEntrenamiento;
