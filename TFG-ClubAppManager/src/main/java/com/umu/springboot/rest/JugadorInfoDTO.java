@@ -2,18 +2,20 @@ package com.umu.springboot.rest;
 
 public class JugadorInfoDTO {
 
-	private String dniDelantera;
-	private String dniTrasera;
-	private String dniDelanteraTutor1;
-	private String dniTraseraTutor1;
-	private String dniDelanteraTutor2;
-	private String dniTraseraTutor2;
+	private long dniDelantera;
+	private long dniTrasera;
+	private long dniDelanteraTutor1;
+	private long dniTraseraTutor1;
+	private long dniDelanteraTutor2;
+	private long dniTraseraTutor2;
 
 	public JugadorInfoDTO() {
+		super();
 	}
 
-	public JugadorInfoDTO(String dniDelantera, String dniTrasera, String dniDelanteraTutor1, String dniTraseraTutor1,
-			String dniDelanteraTutor2, String dniTraseraTutor2) {
+	public JugadorInfoDTO(long dniDelantera, long dniTrasera, long dniDelanteraTutor1, long dniTraseraTutor1,
+			long dniDelanteraTutor2, long dniTraseraTutor2) {
+		super();
 		this.dniDelantera = dniDelantera;
 		this.dniTrasera = dniTrasera;
 		this.dniDelanteraTutor1 = dniDelanteraTutor1;
@@ -22,51 +24,51 @@ public class JugadorInfoDTO {
 		this.dniTraseraTutor2 = dniTraseraTutor2;
 	}
 
-	public String getDniDelantera() {
+	public long getDniDelantera() {
 		return dniDelantera;
 	}
 
-	public void setDniDelantera(String dniDelantera) {
+	public void setDniDelantera(long dniDelantera) {
 		this.dniDelantera = dniDelantera;
 	}
 
-	public String getDniTrasera() {
+	public long getDniTrasera() {
 		return dniTrasera;
 	}
 
-	public void setDniTrasera(String dniTrasera) {
+	public void setDniTrasera(long dniTrasera) {
 		this.dniTrasera = dniTrasera;
 	}
 
-	public String getDniDelanteraTutor1() {
+	public long getDniDelanteraTutor1() {
 		return dniDelanteraTutor1;
 	}
 
-	public void setDniDelanteraTutor1(String dniDelanteraTutor1) {
+	public void setDniDelanteraTutor1(long dniDelanteraTutor1) {
 		this.dniDelanteraTutor1 = dniDelanteraTutor1;
 	}
 
-	public String getDniTraseraTutor1() {
+	public long getDniTraseraTutor1() {
 		return dniTraseraTutor1;
 	}
 
-	public void setDniTraseraTutor1(String dniTraseraTutor1) {
+	public void setDniTraseraTutor1(long dniTraseraTutor1) {
 		this.dniTraseraTutor1 = dniTraseraTutor1;
 	}
 
-	public String getDniDelanteraTutor2() {
+	public long getDniDelanteraTutor2() {
 		return dniDelanteraTutor2;
 	}
 
-	public void setDniDelanteraTutor2(String dniDelanteraTutor2) {
+	public void setDniDelanteraTutor2(long dniDelanteraTutor2) {
 		this.dniDelanteraTutor2 = dniDelanteraTutor2;
 	}
 
-	public String getDniTraseraTutor2() {
+	public long getDniTraseraTutor2() {
 		return dniTraseraTutor2;
 	}
 
-	public void setDniTraseraTutor2(String dniTraseraTutor2) {
+	public void setDniTraseraTutor2(long dniTraseraTutor2) {
 		this.dniTraseraTutor2 = dniTraseraTutor2;
 	}
 

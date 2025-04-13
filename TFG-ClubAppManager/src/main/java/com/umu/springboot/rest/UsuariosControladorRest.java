@@ -1,7 +1,9 @@
 package com.umu.springboot.rest;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -26,8 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.umu.springboot.servicio.IServicioFotos;
 import com.umu.springboot.servicio.IServicioUsuarios;
 
 @RestController
@@ -36,6 +43,9 @@ public class UsuariosControladorRest {
 
 	@Autowired
 	private IServicioUsuarios servicioUsuarios;
+	
+	@Autowired
+	private IServicioFotos servicioFotos;
 
 	@Autowired
 	private PagedResourcesAssembler<EntrenadorCompletoDTO> pagedResourcesAssembler1;
@@ -56,16 +66,38 @@ public class UsuariosControladorRest {
 		return ResponseEntity.ok(c);
 	}
 
-	@PostMapping(value = "/usuario/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> registroUsuario(@Valid @RequestBody CreacionJugadorDTO creacionDTO) {
+	@PostMapping(value = "/usuario/register")
+	public ResponseEntity<Void> registroUsuario(@RequestParam ("creacionDTOString") String creacionDTOString,
+			@RequestParam ("dniFrontal") MultipartFile dniFrontal, @RequestParam ("dniTrasero") MultipartFile dniTrasero,
+			@RequestParam ("dniFrontalTutor1") MultipartFile dniFrontalTutor1, @RequestParam ("dniTraseroTutor1") MultipartFile dniTraseroTutor1,
+			@RequestParam ("dniFrontalTutor2") MultipartFile dniFrontalTutor2, @RequestParam ("dniTraseroTutor2") MultipartFile dniTraseroTutor2) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+
+		CreacionJugadorDTO creacionDTO = null;
+		try {
+			creacionDTO = mapper.readValue(creacionDTOString, CreacionJugadorDTO.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, dniFrontalTutor1, dniTraseroTutor1, dniFrontalTutor2, dniTraseroTutor2);
+		
 		String idUsuario = servicioUsuarios.darDeAltaJugador(creacionDTO.getTel(), creacionDTO.getNombre(),
-				creacionDTO.getFechaNac(), creacionDTO.getEmail(), creacionDTO.getPass(), creacionDTO.getDniDelantera(),
-				creacionDTO.getDniTrasera(), creacionDTO.getEmailTutor1(), creacionDTO.getDniDelanteraTutor1(),
-				creacionDTO.getDniTraseraTutor1(), creacionDTO.getEmailTutor2(), creacionDTO.getDniDelanteraTutor2(),
-				creacionDTO.getDniTraseraTutor2());
-		if(idUsuario == null)
+				creacionDTO.getFechaNac(), creacionDTO.getEmail(), creacionDTO.getPass(), fotos.get(0),
+				fotos.get(1), creacionDTO.getEmailTutor1(), fotos.get(2),
+				fotos.get(3), creacionDTO.getEmailTutor2(), fotos.get(4),
+				fotos.get(5));
+		if (idUsuario == null)
 			return ResponseEntity.badRequest().build();
-			
+
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idUsuario}").buildAndExpand(idUsuario)
 				.toUri();
 

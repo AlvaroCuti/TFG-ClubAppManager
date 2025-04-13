@@ -5,22 +5,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Jugador extends Usuario {
-	private String dniDelantera; // TODO
-	private String dniTrasera; // TODO
+	private long dniDelantera; // TODO
+	private long dniTrasera; // TODO
 
 	private String emailTutor1;
-	private String dniDelanteraTutor1; // TODO
-	private String dniTraseraTutor1; // TODO
+	private long dniDelanteraTutor1; // TODO
+	private long dniTraseraTutor1; // TODO
 
 	private String emailTutor2;
-	private String dniDelanteraTutor2; // TODO
-	private String dniTraseraTutor2; // TODO
+	private long dniDelanteraTutor2; // TODO
+	private long dniTraseraTutor2; // TODO
 
 	private List<Asistencia> asistencias;
 
 	public Jugador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
-			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
-			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2) {
+			long dniDelantera, long dniTrasera, String emailTutor1, long dniDelanteraTutor1, long dniTraseraTutor1,
+			String emailTutor2, long dniDelanteraTutor2, long dniTraseraTutor2) {
 
 		super(tel, nombre, fechaNac, email, pass, rol);
 		this.dniDelantera = dniDelantera;
@@ -42,43 +42,35 @@ public class Jugador extends Usuario {
 		this.asistencias = asistencias;
 	}
 
-	public String getDniDelantera() {
+	public long getDniDelantera() {
 		return dniDelantera;
 	}
 
-	public void setDniDelantera(String dniDelantera) {
+	public void setDniDelantera(long dniDelantera) {
 		this.dniDelantera = dniDelantera;
 	}
 
-	public String getDniTrasera() {
+	public long getDniTrasera() {
 		return dniTrasera;
 	}
 
-	public void setDniTrasera(String dniTrasera) {
+	public void setDniTrasera(long dniTrasera) {
 		this.dniTrasera = dniTrasera;
 	}
 
-	public String getEmailTutor1() {
-		return emailTutor1;
-	}
-
-	public void setEmailTutor1(String emailTutor1) {
-		this.emailTutor1 = emailTutor1;
-	}
-
-	public String getDniDelanteraTutor1() {
+	public long getDniDelanteraTutor1() {
 		return dniDelanteraTutor1;
 	}
 
-	public void setDniDelanteraTutor1(String dniDelanteraTutor1) {
+	public void setDniDelanteraTutor1(long dniDelanteraTutor1) {
 		this.dniDelanteraTutor1 = dniDelanteraTutor1;
 	}
 
-	public String getDniTraseraTutor1() {
+	public long getDniTraseraTutor1() {
 		return dniTraseraTutor1;
 	}
 
-	public void setDniTraseraTutor1(String dniTraseraTutor1) {
+	public void setDniTraseraTutor1(long dniTraseraTutor1) {
 		this.dniTraseraTutor1 = dniTraseraTutor1;
 	}
 
@@ -90,20 +82,28 @@ public class Jugador extends Usuario {
 		this.emailTutor2 = emailTutor2;
 	}
 
-	public String getDniDelanteraTutor2() {
+	public long getDniDelanteraTutor2() {
 		return dniDelanteraTutor2;
 	}
 
-	public void setDniDelanteraTutor2(String dniDelanteraTutor2) {
+	public void setDniDelanteraTutor2(long dniDelanteraTutor2) {
 		this.dniDelanteraTutor2 = dniDelanteraTutor2;
 	}
 
-	public String getDniTraseraTutor2() {
+	public long getDniTraseraTutor2() {
 		return dniTraseraTutor2;
 	}
 
-	public void setDniTraseraTutor2(String dniTraseraTutor2) {
+	public void setDniTraseraTutor2(long dniTraseraTutor2) {
 		this.dniTraseraTutor2 = dniTraseraTutor2;
+	}
+
+	public String getEmailTutor1() {
+		return emailTutor1;
+	}
+
+	public void setEmailTutor1(String emailTutor1) {
+		this.emailTutor1 = emailTutor1;
 	}
 
 	public void añadirAsistencia(Asistencia asistencia) {

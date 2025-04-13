@@ -14,9 +14,9 @@ public interface IServicioUsuarios {
 
 	Map<String, Object> verificarCredenciales(String idUsuario, String pass);
 
-	String darDeAltaJugador(String tel, String nombre, String fechaNac, String email, String pass, String dniDelantera,
-			String dniTrasera, String emailTutor1, String dniDelanteraTutor1, String dniTraseraTutor1,
-			String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2);
+	String darDeAltaJugador(String tel, String nombre, String fechaNac, String email, String pass, long dniDelantera,
+			long dniTrasera, String emailTutor1, long dniDelanteraTutor1, long dniTraseraTutor1,
+			String emailTutor2, long dniDelanteraTutor2, long dniTraseraTutor2);
 
 	Page<JugadorDTO> filtrarJugadores(String nombre, String tel, String fechaNac, String email, String emailTutor1,
 			String emailTutor2, Pageable paginacion);

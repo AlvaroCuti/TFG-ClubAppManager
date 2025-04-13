@@ -61,8 +61,8 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
 	@Override
 	public String darDeAltaJugador(String tel, String nombre, String fechaNac, String email, String pass,
-			String dniDelantera, String dniTrasera, String emailTutor1, String dniDelanteraTutor1,
-			String dniTraseraTutor1, String emailTutor2, String dniDelanteraTutor2, String dniTraseraTutor2) {
+			long dniDelantera, long dniTrasera, String emailTutor1, long dniDelanteraTutor1,
+			long dniTraseraTutor1, String emailTutor2, long dniDelanteraTutor2, long dniTraseraTutor2) {
 
 		if (tel == null || tel.isEmpty())
 			throw new IllegalArgumentException("tel: no debe ser nulo ni vacio");
@@ -78,30 +78,30 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
 		if (pass == null || pass.isEmpty())
 			throw new IllegalArgumentException("pass: no debe ser nulo ni vacio");
-		
-		if (dniDelantera == null || dniDelantera.isEmpty())
-			throw new IllegalArgumentException("dniDelantera: no debe ser nulo ni vacio");
-		
-		if (dniTrasera == null || dniTrasera.isEmpty())
-			throw new IllegalArgumentException("dniTrasera: no debe ser nulo ni vacio");
+//		
+//		if (dniDelantera == null || dniDelantera.isEmpty())
+//			throw new IllegalArgumentException("dniDelantera: no debe ser nulo ni vacio");
+//		
+//		if (dniTrasera == null || dniTrasera.isEmpty())
+//			throw new IllegalArgumentException("dniTrasera: no debe ser nulo ni vacio");
 		
 		if (emailTutor1 == null || emailTutor1.isEmpty())
 			throw new IllegalArgumentException("emailTutor1: no debe ser nulo ni vacio");
-		
-		if (dniDelanteraTutor1 == null || dniDelanteraTutor1.isEmpty())
-			throw new IllegalArgumentException("dniDelanteraTutor1: no debe ser nulo ni vacio");
-		
-		if (dniTraseraTutor1 == null || dniTraseraTutor1.isEmpty())
-			throw new IllegalArgumentException("dniTraseraTutor1: no debe ser nulo ni vacio");
+//		
+//		if (dniDelanteraTutor1 == null || dniDelanteraTutor1.isEmpty())
+//			throw new IllegalArgumentException("dniDelanteraTutor1: no debe ser nulo ni vacio");
+//		
+//		if (dniTraseraTutor1 == null || dniTraseraTutor1.isEmpty())
+//			throw new IllegalArgumentException("dniTraseraTutor1: no debe ser nulo ni vacio");
 		
 		if (emailTutor2 == null || emailTutor2.isEmpty())
 			throw new IllegalArgumentException("emailTutor2: no debe ser nulo ni vacio");
 		
-		if (dniDelanteraTutor2 == null || dniDelanteraTutor2.isEmpty())
-			throw new IllegalArgumentException("dniDelanteraTutor2: no debe ser nulo ni vacio");
-
-		if (dniTraseraTutor2 == null || dniTraseraTutor2.isEmpty())
-			throw new IllegalArgumentException("dniTraseraTutor2: no debe ser nulo ni vacio");
+//		if (dniDelanteraTutor2 == null || dniDelanteraTutor2.isEmpty())
+//			throw new IllegalArgumentException("dniDelanteraTutor2: no debe ser nulo ni vacio");
+//
+//		if (dniTraseraTutor2 == null || dniTraseraTutor2.isEmpty())
+//			throw new IllegalArgumentException("dniTraseraTutor2: no debe ser nulo ni vacio");
 
 		if (repositorioUsuario.existsById(tel))
 			return null;
