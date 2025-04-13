@@ -3,6 +3,7 @@ package com.umu.springboot.servicio;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,4 +45,15 @@ public class ServicioFotos implements IServicioFotos {
 		}
 		return img;
 	}
+
+	@Override
+	public List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long dniFrontalTutor1, long dniTraseroTutor1,
+			long dniFrontalTutor2, long dniTraseroTutor2) {
+		
+		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, dniFrontalTutor1, dniTraseroTutor1,
+				dniFrontalTutor2, dniTraseroTutor2);
+		
+		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());		
+	}
+	
 }
