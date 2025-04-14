@@ -1,6 +1,7 @@
 package com.umu.springboot.servicio;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,9 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		if (repositorioUsuario.existsById(tel))
 			return null;
 		
-		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac), email, pass, "JUGADOR", dniDelantera,
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		
+		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, pass, "JUGADOR", dniDelantera,
 				dniTrasera, emailTutor1, dniDelanteraTutor1, dniTraseraTutor1, emailTutor2, dniDelanteraTutor2,
 				dniTraseraTutor2);
 		
