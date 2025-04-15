@@ -11,7 +11,10 @@ public interface IServicioFotos {
 	List<Long> almacenarFotos(MultipartFile dniFrontal, MultipartFile dniTrasero, MultipartFile dniFrontalTutor1,
 			MultipartFile dniTraseroTutor1, MultipartFile dniFrontalTutor2, MultipartFile dniTraseroTutor2);
 	
+	List<Long> almacenarFotos(MultipartFile dniFrontal, MultipartFile dniTrasero, MultipartFile certDelitos);
+	
 	List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long dniFrontalTutor1,
 			long dniTraseroTutor1, long dniFrontalTutor2, long dniTraseroTutor2);
 
+	List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long certDelitos);
 }

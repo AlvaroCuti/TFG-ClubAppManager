@@ -3,44 +3,44 @@ package com.umu.springboot.modelo;
 import java.time.LocalDate;
 
 public class Entrenador extends Usuario {
-	private String dniDelantera; // TODO
-	private String dniTrasera; // TODO
-	private String certificadoDelitosSexuales; // TODO
+	private long dniDelantera; // TODO
+	private long dniTrasera; // TODO
+	private long certificadoDelitosSexuales; // TODO
 
 	public Entrenador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
-			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
+			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
 		super(tel, nombre, fechaNac, email, pass, rol);
 		this.dniDelantera = dniDelantera;
 		this.dniTrasera = dniTrasera;
 		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
 	}
 
-	public String getDniDelantera() {
+	public long getDniDelantera() {
 		return dniDelantera;
 	}
 
-	public void setDniDelantera(String dniDelantera) {
+	public void setDniDelantera(long dniDelantera) {
 		this.dniDelantera = dniDelantera;
 	}
 
-	public String getDniTrasera() {
+	public long getDniTrasera() {
 		return dniTrasera;
 	}
 
-	public void setDniTrasera(String dniTrasera) {
+	public void setDniTrasera(long dniTrasera) {
 		this.dniTrasera = dniTrasera;
 	}
 
-	public String getCertificadoDelitosSexuales() {
+	public long getCertificadoDelitosSexuales() {
 		return certificadoDelitosSexuales;
 	}
 
-	public void setCertificadoDelitosSexuales(String certificadoDelitosSexuales) {
+	public void setCertificadoDelitosSexuales(long certificadoDelitosSexuales) {
 		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
 	}
 
-	public void modificar(String tel, String nombre, LocalDate fechaNac, String email, String pass, String dniDelantera,
-			String dniTrasera, String certificadoDelitosSexuales) {
+	public void modificar(String tel, String nombre, LocalDate fechaNac, String email, String pass, long dniDelantera,
+			long dniTrasera, long certificadoDelitosSexuales) {
 		this.setTel(tel);
 		this.setNombre(nombre);
 		this.setFechaNac(fechaNac);

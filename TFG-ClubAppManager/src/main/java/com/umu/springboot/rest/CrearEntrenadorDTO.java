@@ -6,9 +6,6 @@ public class CrearEntrenadorDTO {
 	private String fechaNac;
 	private String email;
 	private String pass;
-	private String dniDelantera;
-	private String dniTrasera;
-	private String certificadoDelitosSexuales;
 
 	public CrearEntrenadorDTO() {
 	}
@@ -20,9 +17,6 @@ public class CrearEntrenadorDTO {
 		this.fechaNac = fechaNac;
 		this.email = email;
 		this.pass = pass;
-		this.dniDelantera = dniDelantera;
-		this.dniTrasera = dniTrasera;
-		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
 	}
 
 	public String getTel() {
@@ -63,30 +57,6 @@ public class CrearEntrenadorDTO {
 
 	public void setPass(String pass) {
 		this.pass = pass;
-	}
-
-	public String getDniDelantera() {
-		return dniDelantera;
-	}
-
-	public void setDniDelantera(String dniDelantera) {
-		this.dniDelantera = dniDelantera;
-	}
-
-	public String getDniTrasera() {
-		return dniTrasera;
-	}
-
-	public void setDniTrasera(String dniTrasera) {
-		this.dniTrasera = dniTrasera;
-	}
-
-	public String getCertificadoDelitosSexuales() {
-		return certificadoDelitosSexuales;
-	}
-
-	public void setCertificadoDelitosSexuales(String certificadoDelitosSexuales) {
-		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
 	}
 
 }

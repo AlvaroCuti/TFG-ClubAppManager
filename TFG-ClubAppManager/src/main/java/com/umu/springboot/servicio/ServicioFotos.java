@@ -31,6 +31,15 @@ public class ServicioFotos implements IServicioFotos {
 		return archivos.stream().filter(this::esArchivoValido).map(this::crearImagen).map(repositorioImagen::save)
 				.map(Imagen::getId).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<Long> almacenarFotos(MultipartFile dniFrontal, MultipartFile dniTrasero, MultipartFile certDelitos) {
+
+		List<MultipartFile> archivos = Arrays.asList(dniFrontal, dniTrasero, certDelitos);
+
+		return archivos.stream().filter(this::esArchivoValido).map(this::crearImagen).map(repositorioImagen::save)
+				.map(Imagen::getId).collect(Collectors.toList());
+	}
 
 	private boolean esArchivoValido(MultipartFile file) {
 		return file != null && !file.isEmpty();
@@ -52,6 +61,14 @@ public class ServicioFotos implements IServicioFotos {
 		
 		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, dniFrontalTutor1, dniTraseroTutor1,
 				dniFrontalTutor2, dniTraseroTutor2);
+		
+		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());		
+	}
+	
+	@Override
+	public List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long certDelitos) {
+		
+		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, certDelitos);
 		
 		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());		
 	}

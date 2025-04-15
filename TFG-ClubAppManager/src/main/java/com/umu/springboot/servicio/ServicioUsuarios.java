@@ -186,16 +186,13 @@ public class ServicioUsuarios implements IServicioUsuarios {
 			entrenador.setNombre(e.getNombre());
 			entrenador.setFechaNac(e.getFechaNac().toString());
 			entrenador.setEmail(e.getEmail());
-			entrenador.setDniTrasera(e.getDniTrasera());
-			entrenador.setDniDelantera(e.getDniDelantera());
-			entrenador.setCertificadoDelitosSexuales(e.getCertificadoDelitosSexuales());
 			return entrenador;
 		});
 	}
 
 	@Override
 	public String crearEntrenador(String tel, String nombre, String fechaNac, String email, String pass,
-			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
+			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
 
 		if (tel == null || tel.isEmpty())
 			throw new IllegalArgumentException("tel: no debe ser nulo ni vacio");
@@ -212,19 +209,21 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		if (pass == null || pass.isEmpty())
 			throw new IllegalArgumentException("pass: no debe ser nulo ni vacio");
 
-		if (dniDelantera == null || dniDelantera.isEmpty())
-			throw new IllegalArgumentException("dniDelantera: no debe ser nulo ni vacio");
-
-		if (dniTrasera == null || dniTrasera.isEmpty())
-			throw new IllegalArgumentException("dniTrasera: no debe ser nulo ni vacio");
-
-		if (certificadoDelitosSexuales == null || certificadoDelitosSexuales.isEmpty())
-			throw new IllegalArgumentException("certificadoDelitosSexuales: no debe ser nulo ni vacio");
+//		if (dniDelantera == null || dniDelantera.isEmpty())
+//			throw new IllegalArgumentException("dniDelantera: no debe ser nulo ni vacio");
+//
+//		if (dniTrasera == null || dniTrasera.isEmpty())
+//			throw new IllegalArgumentException("dniTrasera: no debe ser nulo ni vacio");
+//
+//		if (certificadoDelitosSexuales == null || certificadoDelitosSexuales.isEmpty())
+//			throw new IllegalArgumentException("certificadoDelitosSexuales: no debe ser nulo ni vacio");
 
 		if (repositorioUsuario.existsById(tel))
 			return null;
 		
-		Entrenador entrenador = new Entrenador(tel, nombre, LocalDate.parse(fechaNac), email, pass, "ENTRENADOR",
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		
+		Entrenador entrenador = new Entrenador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, pass, "ENTRENADOR",
 				dniDelantera, dniTrasera, certificadoDelitosSexuales); // TODO pass generada para los entrenadores
 
 		repositorioUsuario.save(entrenador);
@@ -240,14 +239,14 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		if(!repositorioUsuario.existsById(idEntrenador))
 			return null;
 		
-		Usuario user = repositorioUsuario.findById(idEntrenador).orElse(null);
-		EntrenadorDTO dto = new EntrenadorDTO(user.getTel()); // TODO no esta bien
+		Entrenador entrenador = (Entrenador) repositorioUsuario.findById(idEntrenador).orElse(null);
+		EntrenadorDTO dto = new EntrenadorDTO(entrenador.getTel(), entrenador.getDniDelantera(), entrenador.getDniTrasera(), entrenador.getCertificadoDelitosSexuales()); // TODO no esta bien
 		return dto;
 	}
 
 	@Override
 	public void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass,
-			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {
+			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
 		Usuario usuario = repositorioUsuario.findById(telAntiguo).orElse(null);
 		((Entrenador) usuario).modificar(telNuevo, nombre, LocalDate.parse(fechaNac), email, pass, dniDelantera, dniTrasera,
 				certificadoDelitosSexuales);

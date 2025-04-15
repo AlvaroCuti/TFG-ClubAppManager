@@ -25,13 +25,13 @@ public interface IServicioUsuarios {
 
 	Page<EntrenadorCompletoDTO> listaEntrenadores(Pageable paginacion);
 
-	String crearEntrenador(String tel, String nombre, String fechaNac, String email, String pass, String dniDelantera,
-			String dniTrasera, String certificadoDelitosSexuales);
+	String crearEntrenador(String tel, String nombre, String fechaNac, String email, String pass, long dniDelantera,
+			long dniTrasera, long certificadoDelitosSexuales);
 
 	EntrenadorDTO getEntrenador(String idEntrenador);
 
-	void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass, String dniDelantera,
-			String dniTrasera, String certificadoDelitosSexuales);
+	void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass, long dniDelantera,
+			long dniTrasera, long certificadoDelitosSexuales);
 
 	void borrarEntrenador(String idEntrenador);
 

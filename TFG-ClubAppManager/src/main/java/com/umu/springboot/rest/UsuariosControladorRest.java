@@ -48,13 +48,13 @@ public class UsuariosControladorRest {
 
 	@Autowired
 	private IServicioUsuarios servicioUsuarios;
-	
+
 	@Autowired
 	private IServicioFotos servicioFotos;
 
 	@Autowired
 	private PagedResourcesAssembler<EntrenadorCompletoDTO> pagedResourcesAssembler1;
-	
+
 	@Autowired
 	private PagedResourcesAssembler<JugadorDTO> pagedResourcesAssembler2;
 
@@ -62,21 +62,23 @@ public class UsuariosControladorRest {
 	public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody AutenticarUsuarioDTO autenticacionDTO) {
 		Map<String, Object> c = servicioUsuarios.verificarCredenciales(autenticacionDTO.getTel(),
 				autenticacionDTO.getPass());
-		if(c == null) {
+		if (c == null) {
 			Map<String, Object> errorResponse = new HashMap<>();
-	        errorResponse.put("error", "Unauthorized");
-	        errorResponse.put("message", "Credenciales incorrectas");
+			errorResponse.put("error", "Unauthorized");
+			errorResponse.put("message", "Credenciales incorrectas");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
 		}
 		return ResponseEntity.ok(c);
 	}
 
 	@PostMapping(value = "/usuario/register")
-	public ResponseEntity<Void> registroUsuario(@RequestParam ("creacionDTOString") String creacionDTOString,
-			@RequestParam ("dniFrontal") MultipartFile dniFrontal, @RequestParam ("dniTrasero") MultipartFile dniTrasero,
-			@RequestParam ("dniFrontalTutor1") MultipartFile dniFrontalTutor1, @RequestParam ("dniTraseroTutor1") MultipartFile dniTraseroTutor1,
-			@RequestParam ("dniFrontalTutor2") MultipartFile dniFrontalTutor2, @RequestParam ("dniTraseroTutor2") MultipartFile dniTraseroTutor2) {
-		
+	public ResponseEntity<Void> registroUsuario(@RequestParam("creacionDTOString") String creacionDTOString,
+			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
+			@RequestParam("dniFrontalTutor1") MultipartFile dniFrontalTutor1,
+			@RequestParam("dniTraseroTutor1") MultipartFile dniTraseroTutor1,
+			@RequestParam("dniFrontalTutor2") MultipartFile dniFrontalTutor2,
+			@RequestParam("dniTraseroTutor2") MultipartFile dniTraseroTutor2) {
+
 		ObjectMapper mapper = new ObjectMapper();
 
 		CreacionJugadorDTO creacionDTO = null;
@@ -92,13 +94,13 @@ public class UsuariosControladorRest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, dniFrontalTutor1, dniTraseroTutor1, dniFrontalTutor2, dniTraseroTutor2);
-		
+
+		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, dniFrontalTutor1, dniTraseroTutor1,
+				dniFrontalTutor2, dniTraseroTutor2);
+
 		String idUsuario = servicioUsuarios.darDeAltaJugador(creacionDTO.getTel(), creacionDTO.getNombre(),
-				creacionDTO.getFechaNac(), creacionDTO.getEmail(), creacionDTO.getPass(), fotos.get(0),
-				fotos.get(1), creacionDTO.getEmailTutor1(), fotos.get(2),
-				fotos.get(3), creacionDTO.getEmailTutor2(), fotos.get(4),
+				creacionDTO.getFechaNac(), creacionDTO.getEmail(), creacionDTO.getPass(), fotos.get(0), fotos.get(1),
+				creacionDTO.getEmailTutor1(), fotos.get(2), fotos.get(3), creacionDTO.getEmailTutor2(), fotos.get(4),
 				fotos.get(5));
 		if (idUsuario == null)
 			return ResponseEntity.badRequest().build();
@@ -113,11 +115,11 @@ public class UsuariosControladorRest {
 	public PagedModel<EntityModel<JugadorDTO>> filtrarJugadores(@RequestParam(required = false) String nombre,
 			@RequestParam(required = false) String tel, @RequestParam(required = false) String fechaNac,
 			@RequestParam(required = false) String email, @RequestParam(required = false) String emailTutor1,
-			@RequestParam(required = false) String emailTutor2, @RequestParam int page,
-			@RequestParam int size) {		
-		
+			@RequestParam(required = false) String emailTutor2, @RequestParam int page, @RequestParam int size) {
+
 		Pageable paginacion = PageRequest.of(page, size);
-		Page<JugadorDTO> listaJugadoresDTO = servicioUsuarios.filtrarJugadores(nombre, tel, fechaNac, email, emailTutor1, emailTutor2, paginacion);
+		Page<JugadorDTO> listaJugadoresDTO = servicioUsuarios.filtrarJugadores(nombre, tel, fechaNac, email,
+				emailTutor1, emailTutor2, paginacion);
 		return this.pagedResourcesAssembler2.toModel(listaJugadoresDTO, jugador -> {
 			EntityModel<JugadorDTO> model = EntityModel.of(jugador);
 			return model;
@@ -127,33 +129,33 @@ public class UsuariosControladorRest {
 	@GetMapping(value = "/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ByteArrayResource> getInfoJugador(@PathVariable String idUsuario) {
 		JugadorInfoDTO dto = servicioUsuarios.descargarInfoUsuario(idUsuario);
-		
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    ZipOutputStream zipOut = new ZipOutputStream(baos);
-		
-	    List<Imagen> imagenes = servicioFotos.descargarFotos(dto.getDniDelantera(), dto.getDniTrasera(), dto.getDniDelanteraTutor1(), dto.getDniTraseraTutor1(), dto.getDniDelanteraTutor2(), dto.getDniTraseraTutor2());
+		ZipOutputStream zipOut = new ZipOutputStream(baos);
+
+		List<Imagen> imagenes = servicioFotos.descargarFotos(dto.getDniDelantera(), dto.getDniTrasera(),
+				dto.getDniDelanteraTutor1(), dto.getDniTraseraTutor1(), dto.getDniDelanteraTutor2(),
+				dto.getDniTraseraTutor2());
 		try {
 			for (Imagen imagen : imagenes) {
 				ZipEntry zipEntry = new ZipEntry("ID-" + imagen.getId() + "-" + imagen.getNombre());
-	            zipOut.putNextEntry(zipEntry);
-	            zipOut.write(imagen.getContenido());
-	            zipOut.closeEntry();
+				zipOut.putNextEntry(zipEntry);
+				zipOut.write(imagen.getContenido());
+				zipOut.closeEntry();
 			}
-			
+
 			zipOut.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
-	    ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
 
-	    return ResponseEntity.ok()
-	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"imagenes.zip\"")
-	            .body(recurso);
+		ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"imagenes.zip\"").body(recurso);
 	}
 
-	@GetMapping(value = "/entrenador", produces = MediaType.APPLICATION_JSON_VALUE)					
+	@GetMapping(value = "/entrenador", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<EntityModel<EntrenadorCompletoDTO>> getListadoEntrenadores(@RequestParam int page,
 			@RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
@@ -164,43 +166,87 @@ public class UsuariosControladorRest {
 		});
 	}
 
-	@PostMapping(value = "/entrenador", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> crearEntrenador(@Valid @RequestBody CrearEntrenadorDTO crearEntrenadorDTO) {
-		String idEntrenador = servicioUsuarios.crearEntrenador(crearEntrenadorDTO.getTel(),
-				crearEntrenadorDTO.getNombre(), crearEntrenadorDTO.getFechaNac(), crearEntrenadorDTO.getEmail(),
-				crearEntrenadorDTO.getPass(), crearEntrenadorDTO.getDniDelantera(), crearEntrenadorDTO.getDniTrasera(),
-				crearEntrenadorDTO.getCertificadoDelitosSexuales());
-		if(idEntrenador == null)
-			return ResponseEntity.badRequest().build();
+	@PostMapping(value = "/entrenador")
+	public ResponseEntity<Void> crearEntrenador(@RequestParam("crearEntrenadorDTO") String crearEntrenadorDTO,
+			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
+			@RequestParam("certDelitos") MultipartFile certDelitos) {
 		
+		ObjectMapper mapper = new ObjectMapper();
+
+		CrearEntrenadorDTO creacionDTO = null;
+		try {
+			creacionDTO = mapper.readValue(crearEntrenadorDTO, CrearEntrenadorDTO.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, certDelitos);
+		
+		String idEntrenador = servicioUsuarios.crearEntrenador(creacionDTO.getTel(),
+				creacionDTO.getNombre(), creacionDTO.getFechaNac(), creacionDTO.getEmail(),
+				creacionDTO.getPass(), fotos.get(0), fotos.get(1),
+				fotos.get(2));
+		
+		if (idEntrenador == null)
+			return ResponseEntity.badRequest().build();
+
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenador}").buildAndExpand(idEntrenador)
 				.toUri();
 		return ResponseEntity.created(url).build();
 	}
 
-	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE)			//TODO cambiar DTO que devuelve
-	public EntrenadorDTO getInfoEntrenador(@PathVariable String idEntrenador) {
+	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE) // TODO cambiar DTO																								// que devuelve
+	public ResponseEntity<ByteArrayResource> getInfoEntrenador(@PathVariable String idEntrenador) {
 		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
-		return dto;
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ZipOutputStream zipOut = new ZipOutputStream(baos);
+
+		List<Imagen> imagenes = servicioFotos.descargarFotos(dto.getDniDelantera(), dto.getDniTrasera(),
+				dto.getCertDelitos());
+		try {
+			for (Imagen imagen : imagenes) {
+				ZipEntry zipEntry = new ZipEntry("ID-" + imagen.getId() + "-" + imagen.getNombre());
+				zipOut.putNextEntry(zipEntry);
+				zipOut.write(imagen.getContenido());
+				zipOut.closeEntry();
+			}
+
+			zipOut.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documentos.zip\"").body(recurso);
 	}
 
-	@PutMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
-			@Valid @RequestBody ModificacionEntrenadorDTO modificarEntrenadorDTO) {
-		servicioUsuarios.modificarEntrenador(idEntrenador, modificarEntrenadorDTO.getTel(), modificarEntrenadorDTO.getNombre(),
-				modificarEntrenadorDTO.getFechaNac(), modificarEntrenadorDTO.getEmail(),
-				modificarEntrenadorDTO.getPass(), modificarEntrenadorDTO.getDniDelantera(),
-				modificarEntrenadorDTO.getDniTrasera(), modificarEntrenadorDTO.getCertificadoDelitosSexuales());
-		return ResponseEntity.noContent().build();
-	}
+//	@PutMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
+//			@Valid @RequestBody ModificacionEntrenadorDTO modificarEntrenadorDTO) {
+//		servicioUsuarios.modificarEntrenador(idEntrenador, modificarEntrenadorDTO.getTel(),
+//				modificarEntrenadorDTO.getNombre(), modificarEntrenadorDTO.getFechaNac(),
+//				modificarEntrenadorDTO.getEmail(), modificarEntrenadorDTO.getPass(),
+//				modificarEntrenadorDTO.getDniDelantera(), modificarEntrenadorDTO.getDniTrasera(),
+//				modificarEntrenadorDTO.getCertificadoDelitosSexuales());
+//		return ResponseEntity.noContent().build();
+//	}
 
 	@DeleteMapping(value = "/entrenador/{idEntrenador}")
 	public ResponseEntity<Void> borrarEntrenador(@PathVariable String idEntrenador) {
 		servicioUsuarios.borrarEntrenador(idEntrenador);
 		return ResponseEntity.noContent().build();
 	}
-	
-	
+
 //	@ExceptionHandler(IllegalArgumentException.class)										//TODO REVISAR
 //	public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
 //	    return ResponseEntity.badRequest().body(ex.getMessage());
