@@ -23,6 +23,7 @@ import com.umu.springboot.repositorios.RepositorioEquipo;
 import com.umu.springboot.repositorios.RepositorioUsuario;
 import com.umu.springboot.rest.EntrenadorCompletoDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
+import com.umu.springboot.rest.EquipoIdDTO;
 import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
 import com.umu.springboot.utils.JwtUtilidades;
@@ -177,6 +178,21 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
 	}
 
+	@Override
+	public EquipoIdDTO getEquipoDeJugador(String idUsuario) {
+		if (idUsuario == null || idUsuario.isEmpty())
+			return null;
+
+		if(!repositorioUsuario.existsById(idUsuario))
+			return null;
+		
+		Jugador jugador = (Jugador) repositorioUsuario.findById(idUsuario).orElse(null);
+
+		EquipoIdDTO dto = new EquipoIdDTO(jugador.getEquipo());
+		
+		return dto;
+	}
+	
 	@Override
 	public Page<EntrenadorCompletoDTO> listaEntrenadores(Pageable paginacion) {
 		return this.repositorioUsuario.findByRol("ENTRENADOR", paginacion).map((entrena) -> {

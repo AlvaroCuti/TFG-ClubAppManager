@@ -17,6 +17,7 @@ public class Jugador extends Usuario {
 	private long dniTraseraTutor2; // TODO
 
 	private List<Asistencia> asistencias;
+	private String equipo;
 
 	public Jugador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
 			long dniDelantera, long dniTrasera, String emailTutor1, long dniDelanteraTutor1, long dniTraseraTutor1,
@@ -32,6 +33,7 @@ public class Jugador extends Usuario {
 		this.dniDelanteraTutor2 = dniDelanteraTutor2;
 		this.dniTraseraTutor2 = dniTraseraTutor2;
 		this.asistencias = new LinkedList<>();
+		this.equipo = null;
 	}
 
 	public List<Asistencia> getAsistencias() {
@@ -108,6 +110,14 @@ public class Jugador extends Usuario {
 
 	public void añadirAsistencia(Asistencia asistencia) {
 		this.asistencias.add(asistencia);
+	}
+
+	public String getEquipo() {
+		return equipo;
+	}
+
+	public void setEquipo(String equipo) {
+		this.equipo = equipo;
 	}
 
 	public boolean comprobarAsistencia(Asistencia asistencia) {

@@ -113,6 +113,12 @@ public class ServicioEquipo implements IServicioEquipo {
 
 		equipo.modificar(entrenadores.stream().map(Entrenador.class::cast).collect(Collectors.toList()), jugadores.stream().map(Jugador.class::cast).collect(Collectors.toList()));
 
+		jugadores.stream().map(Jugador.class::cast).forEach(j->{j.setEquipo(idEquipo);});
+		
+		for (Usuario usuario : jugadores) {
+			repositorioUsuario.save(usuario);
+		}
+		
 		repositorioEquipo.save(equipo);
 
 		return;

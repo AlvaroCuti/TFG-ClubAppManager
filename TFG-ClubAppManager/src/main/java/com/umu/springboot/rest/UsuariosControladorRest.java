@@ -154,6 +154,12 @@ public class UsuariosControladorRest {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"imagenes.zip\"").body(recurso);
 	}
+	
+	@GetMapping(value = "/usuario/{idUsuario}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
+	public EquipoIdDTO getEquipoDeJugador(@PathVariable String idUsuario) {
+		EquipoIdDTO equipoIdDTO = servicioUsuarios.getEquipoDeJugador(idUsuario);
+		return equipoIdDTO;
+	}
 
 	@GetMapping(value = "/entrenador", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PagedModel<EntityModel<EntrenadorCompletoDTO>> getListadoEntrenadores(@RequestParam int page,

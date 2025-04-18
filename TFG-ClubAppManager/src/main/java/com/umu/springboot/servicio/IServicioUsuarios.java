@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.umu.springboot.rest.EntrenadorCompletoDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
+import com.umu.springboot.rest.EquipoIdDTO;
 import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
 
@@ -22,6 +23,8 @@ public interface IServicioUsuarios {
 			String emailTutor2, Pageable paginacion);
 
 	JugadorInfoDTO descargarInfoUsuario(String idUsuario);
+	
+	EquipoIdDTO getEquipoDeJugador(String idUsuario);
 
 	Page<EntrenadorCompletoDTO> listaEntrenadores(Pageable paginacion);
 
