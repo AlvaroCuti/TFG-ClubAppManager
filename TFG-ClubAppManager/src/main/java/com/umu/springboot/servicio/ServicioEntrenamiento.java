@@ -76,7 +76,8 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		equipo.addEntrenamiento(entrenamiento);
 
 		String idEntrenamiento = repositorioEntrenamiento.save(entrenamiento).getId();
-
+		repositorioEquipo.save(equipo);
+		
 		return idEntrenamiento;
 	}
 

@@ -35,6 +35,7 @@ public class JwtUtilidades {
 	public Map<String, Object> usuarioAClaims(Usuario usuario) {
 		Map<String, Object> mapaClaims = new HashMap<>();
 		mapaClaims.put("tel", usuario.getTel());
+		mapaClaims.put("nombre", usuario.getNombre());
 		mapaClaims.put("pass", usuario.getPass());
 		mapaClaims.put("rol", usuario.getRol());
 		return mapaClaims;

@@ -230,16 +230,39 @@ public class UsuariosControladorRest {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documentos.zip\"").body(recurso);
 	}
 
-//	@PutMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
-//			@Valid @RequestBody ModificacionEntrenadorDTO modificarEntrenadorDTO) {
-//		servicioUsuarios.modificarEntrenador(idEntrenador, modificarEntrenadorDTO.getTel(),
-//				modificarEntrenadorDTO.getNombre(), modificarEntrenadorDTO.getFechaNac(),
-//				modificarEntrenadorDTO.getEmail(), modificarEntrenadorDTO.getPass(),
-//				modificarEntrenadorDTO.getDniDelantera(), modificarEntrenadorDTO.getDniTrasera(),
-//				modificarEntrenadorDTO.getCertificadoDelitosSexuales());
-//		return ResponseEntity.noContent().build();
-//	}
+	@PutMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
+			@RequestParam("crearEntrenadorDTO") String modificarEntrenadorDTO,
+			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
+			@RequestParam("certDelitos") MultipartFile certDelitos) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+
+		CrearEntrenadorDTO modificacionDTO = null;
+		try {
+			modificacionDTO = mapper.readValue(modificarEntrenadorDTO, CrearEntrenadorDTO.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//TODO borrar fotos antiguas de la base de datos
+		
+		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, certDelitos);
+		
+		servicioUsuarios.modificarEntrenador(idEntrenador, modificacionDTO.getTel(),
+				modificacionDTO.getNombre(), modificacionDTO.getFechaNac(),
+				modificacionDTO.getEmail(), modificacionDTO.getPass(),
+				fotos.get(0), fotos.get(1),
+				fotos.get(2));
+		return ResponseEntity.noContent().build();
+	}
 
 	@DeleteMapping(value = "/entrenador/{idEntrenador}")
 	public ResponseEntity<Void> borrarEntrenador(@PathVariable String idEntrenador) {
