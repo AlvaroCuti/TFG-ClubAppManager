@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import com.umu.springboot.rest.EntrenadorCompletoDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.EquipoIdDTO;
+import com.umu.springboot.rest.EquiposIdsDTO;
 import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
 
@@ -32,7 +33,9 @@ public interface IServicioUsuarios {
 			long dniTrasera, long certificadoDelitosSexuales);
 
 	EntrenadorDTO getEntrenador(String idEntrenador);
-
+	
+	EquiposIdsDTO getEquiposDeEntrenador(String idEntrenador);
+	
 	void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass, long dniDelantera,
 			long dniTrasera, long certificadoDelitosSexuales);
 

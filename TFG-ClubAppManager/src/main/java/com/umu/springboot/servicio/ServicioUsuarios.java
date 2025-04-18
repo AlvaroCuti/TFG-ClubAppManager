@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import com.umu.springboot.repositorios.RepositorioUsuario;
 import com.umu.springboot.rest.EntrenadorCompletoDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.EquipoIdDTO;
+import com.umu.springboot.rest.EquiposIdsDTO;
 import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
 import com.umu.springboot.utils.JwtUtilidades;
@@ -260,6 +262,22 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		return dto;
 	}
 
+	@Override
+	public EquiposIdsDTO getEquiposDeEntrenador(String idEntrenador) {
+		if (idEntrenador == null || idEntrenador.isEmpty())
+			return null;
+
+		if(!repositorioUsuario.existsById(idEntrenador))
+			return null;
+		
+		Entrenador entrenador = (Entrenador) repositorioUsuario.findById(idEntrenador).orElse(null);
+
+		List<EquipoIdDTO> equipos = entrenador.getEquipos().stream()
+				.map(EquipoIdDTO::new).collect(Collectors.toList());	
+		
+		return new EquiposIdsDTO(equipos);
+	}
+	
 	@Override
 	public void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass,
 			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {

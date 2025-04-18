@@ -236,6 +236,12 @@ public class UsuariosControladorRest {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documentos.zip\"").body(recurso);
 	}
 
+	@GetMapping(value = "/entrenador/{idEntrenador}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
+	public EquiposIdsDTO getEquiposDeEntrenador(@PathVariable String idEntrenador) {
+		EquiposIdsDTO equiposIdsDTO = servicioUsuarios.getEquiposDeEntrenador(idEntrenador);
+		return equiposIdsDTO;
+	}
+
 	@PutMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
 			@RequestParam("crearEntrenadorDTO") String modificarEntrenadorDTO,

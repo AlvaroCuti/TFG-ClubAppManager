@@ -1,11 +1,15 @@
 package com.umu.springboot.modelo;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Entrenador extends Usuario {
 	private long dniDelantera; // TODO
 	private long dniTrasera; // TODO
 	private long certificadoDelitosSexuales; // TODO
+	
+	private List<String> equipos;
 
 	public Entrenador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
 			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
@@ -13,6 +17,7 @@ public class Entrenador extends Usuario {
 		this.dniDelantera = dniDelantera;
 		this.dniTrasera = dniTrasera;
 		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
+		this.equipos = new LinkedList<String>();
 	}
 
 	public long getDniDelantera() {
@@ -37,6 +42,18 @@ public class Entrenador extends Usuario {
 
 	public void setCertificadoDelitosSexuales(long certificadoDelitosSexuales) {
 		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
+	}
+
+	public List<String> getEquipos() {
+		return equipos;
+	}
+
+	public void setEquipos(List<String> equipos) {
+		this.equipos = equipos;
+	}
+	
+	public void addEquipo(String equipo) {
+		this.equipos.add(equipo);
 	}
 
 	public void modificar(String tel, String nombre, LocalDate fechaNac, String email, String pass, long dniDelantera,
