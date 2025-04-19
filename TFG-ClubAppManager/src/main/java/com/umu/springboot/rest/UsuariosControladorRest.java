@@ -242,9 +242,9 @@ public class UsuariosControladorRest {
 		return equiposIdsDTO;
 	}
 
-	@PutMapping(value = "/entrenador/{idEntrenador}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/entrenador/{idEntrenador}")
 	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
-			@RequestParam("crearEntrenadorDTO") String modificarEntrenadorDTO,
+			@RequestParam("modificarEntrenadorDTO") String modificarEntrenadorDTO,
 			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
 			@RequestParam("certDelitos") MultipartFile certDelitos) {
 		

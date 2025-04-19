@@ -58,7 +58,7 @@ public class EquiposControladorRest {
 
 	@PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)			
 	public ResponseEntity<Void> crearEquipo(@Valid @RequestBody CreacionEquipoDTO crearEquipoDTO) {	
-		String idEquipo = servicioEquipo.crearEquipo(servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
+		String idEquipo = servicioEquipo.crearEquipo(crearEquipoDTO.getNombre(), servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
 		if(idEquipo == null)
 			return ResponseEntity.badRequest().build();
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEquipo}").buildAndExpand(idEquipo).toUri();
@@ -73,7 +73,7 @@ public class EquiposControladorRest {
 	
 	@PutMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) {
-		servicioEquipo.modificarEquipo(idEquipo, servicioEquipo.dtoToModelEntrenador(modificarEquipoDTO.getEntrenadores()), servicioEquipo.dtoToModelJugador(modificarEquipoDTO.getJugadores()));
+		servicioEquipo.modificarEquipo(idEquipo, modificarEquipoDTO.getNombre(), servicioEquipo.dtoToModelEntrenador(modificarEquipoDTO.getEntrenadores()), servicioEquipo.dtoToModelJugador(modificarEquipoDTO.getJugadores()));
 		return ResponseEntity.noContent().build();
 	}	
 	

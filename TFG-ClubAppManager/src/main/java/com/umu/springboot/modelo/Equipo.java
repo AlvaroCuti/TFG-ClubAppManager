@@ -12,18 +12,21 @@ import com.umu.springboot.repositorios.Identificable;
 public class Equipo implements Identificable {
 	@Id
 	private String idEquipo;
+	private String nombre;
 	private List<Jugador> jugadores;
 	private List<Entrenador> entrenadores;
 	private List<Entrenamiento> entrenamientos;
 
-	public Equipo(List<Jugador> jugadores, List<Entrenador> entrenadores) {
+	public Equipo(String nombre, List<Jugador> jugadores, List<Entrenador> entrenadores) {
+		this.nombre = nombre;
 		this.idEquipo = null;
 		this.jugadores = jugadores;
 		this.entrenadores = entrenadores;
 		this.entrenamientos = new LinkedList<Entrenamiento>();
 	}
 
-	public Equipo(List<Entrenador> entrenadores) {
+	public Equipo(String nombre, List<Entrenador> entrenadores) {
+		this.nombre = nombre;
 		this.idEquipo = null;
 		this.jugadores = new LinkedList<Jugador>();
 		this.entrenadores = entrenadores;
@@ -61,9 +64,26 @@ public class Equipo implements Identificable {
 		this.entrenamientos.add(entrenamiento);
 	}
 
-	public void modificar(List<Entrenador> entrenadores, List<Jugador> jugadores) {
+	public void modificar(String nombre, List<Entrenador> entrenadores, List<Jugador> jugadores) {
+		this.nombre = nombre;
 		this.entrenadores = entrenadores;
 		this.jugadores = jugadores;
+	}
+
+	public String getIdEquipo() {
+		return idEquipo;
+	}
+
+	public void setIdEquipo(String idEquipo) {
+		this.idEquipo = idEquipo;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	@Override

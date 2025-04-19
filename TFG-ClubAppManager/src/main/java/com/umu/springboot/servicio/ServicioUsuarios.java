@@ -282,7 +282,9 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	public void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass,
 			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
 		Usuario usuario = repositorioUsuario.findById(telAntiguo).orElse(null);
-		((Entrenador) usuario).modificar(telNuevo, nombre, LocalDate.parse(fechaNac), email, pass, dniDelantera, dniTrasera,
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+		((Entrenador) usuario).modificar(telNuevo, nombre, LocalDate.parse(fechaNac, formatter), email, pass, dniDelantera, dniTrasera,
 				certificadoDelitosSexuales);
 		repositorioUsuario.deleteById(telAntiguo);
 		repositorioUsuario.save(usuario);

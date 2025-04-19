@@ -16,13 +16,13 @@ public interface IServicioEquipo {
 	
 	Page<EquipoDTO> listarEquipos(Pageable paginacion);
 	
-	String crearEquipo(List<Jugador> jugadores, List<Entrenador> entrenadores);
+	String crearEquipo(String nombre, List<Jugador> jugadores, List<Entrenador> entrenadores);
 	
-	String crearEquipo(List<Usuario> entrenadores);
+	String crearEquipo(String nombre, List<Usuario> entrenadores);
 	
 	EquipoDTO getEquipo(String idEquipo);
 	
-	void modificarEquipo(String idEquipo, List<Usuario> entrenadores, List<Usuario> jugadores);
+	void modificarEquipo(String idEquipo, String nombre, List<Usuario> entrenadores, List<Usuario> jugadores);
 	
 	void borrarEquipo(String idEquipo);
 		

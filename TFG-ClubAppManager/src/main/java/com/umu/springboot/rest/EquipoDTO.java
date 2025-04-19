@@ -1,11 +1,13 @@
 package com.umu.springboot.rest;
 
 public class EquipoDTO {
+	private String nombre;
 	private String idEquipo;
 	private String numeroJugadores;
 	private String entrenadores;
 
-	public EquipoDTO(String idEquipo, String numeroJugadores, String entrenadores) {
+	public EquipoDTO(String nombre, String idEquipo, String numeroJugadores, String entrenadores) {
+		this.nombre = nombre;
 		this.idEquipo = idEquipo;
 		this.numeroJugadores = numeroJugadores;
 		this.entrenadores = entrenadores;
@@ -36,6 +38,14 @@ public class EquipoDTO {
 
 	public void setEntrenadores(String entrenadores) {
 		this.entrenadores = entrenadores;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 }

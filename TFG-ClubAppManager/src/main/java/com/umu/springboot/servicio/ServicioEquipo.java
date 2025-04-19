@@ -38,7 +38,7 @@ public class ServicioEquipo implements IServicioEquipo {
 			int numJugadores = (e.getJugadores() != null) ? e.getJugadores().size() : 0;
 			String entrenadores = e.getEntrenadores().stream().map(Entrenador::getNombre)
 					.collect(Collectors.joining(", "));
-
+			equipoDTO.setNombre(e.getNombre());
 			equipoDTO.setIdEquipo(e.getId());
 			equipoDTO.setEntrenadores(entrenadores);
 			equipoDTO.setNumeroJugadores(Integer.toString(numJugadores));
@@ -47,7 +47,7 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public String crearEquipo(List<Jugador> jugadores, List<Entrenador> entrenadores) {
+	public String crearEquipo(String nombre, List<Jugador> jugadores, List<Entrenador> entrenadores) {
 
 		if (jugadores == null || jugadores.isEmpty())
 			return null;
@@ -55,7 +55,7 @@ public class ServicioEquipo implements IServicioEquipo {
 		if (entrenadores == null || entrenadores.isEmpty())
 			return null;
 
-		Equipo equipo = new Equipo(jugadores, entrenadores);
+		Equipo equipo = new Equipo(nombre, jugadores, entrenadores);
 
 		String idEquipo = repositorioEquipo.save(equipo).getId();
 
@@ -64,12 +64,12 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public String crearEquipo(List<Usuario> usuarios) {
+	public String crearEquipo(String nombre, List<Usuario> usuarios) {
 
 		if (usuarios == null || usuarios.isEmpty() || usuarios.contains(null))
 			return null;
 
-		Equipo equipo = new Equipo(usuarios.stream().map(Entrenador.class::cast).collect(Collectors.toList()));
+		Equipo equipo = new Equipo(nombre, usuarios.stream().map(Entrenador.class::cast).collect(Collectors.toList()));
 
 		usuarios.stream().filter(u -> u instanceof Entrenador).map(u -> (Entrenador) u).forEach(u -> {
 			u.addEquipo(equipo.getId());
@@ -94,26 +94,26 @@ public class ServicioEquipo implements IServicioEquipo {
 		String entrenadores = equipo.getEntrenadores().stream().map(Entrenador::getNombre)
 				.collect(Collectors.joining(", "));
 
-		EquipoDTO dto = new EquipoDTO(idEquipo, Integer.toString(numJugadores), entrenadores);
+		EquipoDTO dto = new EquipoDTO(equipo.getNombre(), idEquipo, Integer.toString(numJugadores), entrenadores);
 		return dto;
 
 	}
 
 	@Override
-	public void modificarEquipo(String idEquipo, List<Usuario> entrenadores, List<Usuario> jugadores) {
+	public void modificarEquipo(String idEquipo, String nombre, List<Usuario> entrenadores, List<Usuario> jugadores) {
 
 		if (idEquipo == null || idEquipo.isEmpty())
 			return;
 
-		if (entrenadores == null || entrenadores.isEmpty() || entrenadores.contains(null))
-			return;
-
-		if (jugadores == null || jugadores.isEmpty() || jugadores.contains(null))
-			return;
+//		if (entrenadores == null || entrenadores.isEmpty() || entrenadores.contains(null))
+//			return;
+//
+//		if (jugadores == null || jugadores.isEmpty() || jugadores.contains(null))
+//			return;
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
-		equipo.modificar(entrenadores.stream().map(Entrenador.class::cast).collect(Collectors.toList()),
+		equipo.modificar(nombre, entrenadores.stream().map(Entrenador.class::cast).collect(Collectors.toList()),
 				jugadores.stream().map(Jugador.class::cast).collect(Collectors.toList()));
 
 		jugadores.stream().map(Jugador.class::cast).forEach(j -> {
