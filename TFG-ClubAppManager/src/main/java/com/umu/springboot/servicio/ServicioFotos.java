@@ -73,4 +73,14 @@ public class ServicioFotos implements IServicioFotos {
 		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());		
 	}
 	
+	@Override
+	public void borrarFotos(long dniFrontal, long dniTrasero, long certDelitos) {
+		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, certDelitos);
+		
+		for (Long long1 : archivos) {
+			repositorioImagen.deleteById(long1);
+		}		
+
+	}
+	
 }

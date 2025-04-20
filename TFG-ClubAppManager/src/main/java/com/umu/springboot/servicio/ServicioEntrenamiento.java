@@ -1,10 +1,15 @@
 package com.umu.springboot.servicio;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +22,7 @@ import com.umu.springboot.modelo.Usuario;
 import com.umu.springboot.repositorios.RepositorioEntrenamientoMongo;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
+import com.umu.springboot.rest.AsistenciaDTO;
 import com.umu.springboot.rest.EntrenamientoDTO;
 
 @Service
@@ -39,24 +45,38 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 
 		if (equipo == null)
 			return null;
+		
+		List<Entrenamiento> entrenamientos = equipo.getEntrenamientos();
 
-		return repositorioEntrenamiento.findAll(paginacion).map((Entrenamiento e) -> {
+		// Paginación manual
+		int start = (int) paginacion.getOffset();
+		int end = Math.min(start + paginacion.getPageSize(), entrenamientos.size());
+		List<Entrenamiento> pageEntrenamientos = entrenamientos.subList(start, end);
+
+		List<EntrenamientoDTO> dtos = pageEntrenamientos.stream().map(e -> {
 			EntrenamientoDTO entrenamientoDTO = new EntrenamientoDTO();
 			entrenamientoDTO.setIdEntrenamiento(e.getId());
 			entrenamientoDTO.setLugar(e.getLugar());
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+			entrenamientoDTO.setHorario(e.getHorario().format(formatter));
 
-			int numAsistencias = (e.getAsistencias() != null) ? e.getAsistencias().size() : 0;
+			List<AsistenciaDTO> asistenciasDTO = e.getAsistencias().stream().map(a -> {
+				AsistenciaDTO asistencia = new AsistenciaDTO();
+				asistencia.setIdEntrenamiento(a.getIdEntrenamiento());
+				asistencia.setIdJugador(a.getIdJugador());
+				return asistencia;
+			}).collect(Collectors.toList());
 
-			entrenamientoDTO.setHorario((e.getHorario().format(formatter)));
-			entrenamientoDTO.setNumAsistencias(Integer.toString(numAsistencias));
+			entrenamientoDTO.setAsistencias(asistenciasDTO);
 			return entrenamientoDTO;
-		});
+		}).collect(Collectors.toList());
 
+		// Crear objeto Page
+		return new PageImpl<>(dtos, paginacion, entrenamientos.size());
 	}
 
 	@Override
-	public String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar) {
+	public String programarEntrenamiento(String idEquipo, String fecha, String hora, String lugar) {
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
 			return null;
 
@@ -71,7 +91,12 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		if (equipo == null)
 			return null;
 
-		Entrenamiento entrenamiento = new Entrenamiento(fecha, lugar);
+		LocalDate fechaF = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		LocalTime horaF = LocalTime.parse(hora, DateTimeFormatter.ofPattern("HH:mm"));
+
+		LocalDateTime fechaHora = LocalDateTime.of(fechaF, horaF);
+		
+		Entrenamiento entrenamiento = new Entrenamiento(fechaHora, lugar);
 
 		equipo.addEntrenamiento(entrenamiento);
 

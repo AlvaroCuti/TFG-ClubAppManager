@@ -110,7 +110,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		if (repositorioUsuario.existsById(tel))
 			return null;
 		
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
 		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, pass, "JUGADOR", dniDelantera,
 				dniTrasera, emailTutor1, dniDelanteraTutor1, dniTraseraTutor1, emailTutor2, dniDelanteraTutor2,
@@ -239,7 +239,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		if (repositorioUsuario.existsById(tel))
 			return null;
 		
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
 		Entrenador entrenador = new Entrenador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, pass, "ENTRENADOR",
 				dniDelantera, dniTrasera, certificadoDelitosSexuales); // TODO pass generada para los entrenadores
@@ -282,7 +282,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	public void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass,
 			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
 		Usuario usuario = repositorioUsuario.findById(telAntiguo).orElse(null);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		((Entrenador) usuario).modificar(telNuevo, nombre, LocalDate.parse(fechaNac, formatter), email, pass, dniDelantera, dniTrasera,
 				certificadoDelitosSexuales);

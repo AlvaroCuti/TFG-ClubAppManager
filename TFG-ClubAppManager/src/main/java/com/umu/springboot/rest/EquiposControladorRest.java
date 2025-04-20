@@ -45,6 +45,7 @@ public class EquiposControladorRest {
 	private PagedResourcesAssembler<EntrenamientoDTO> pagedResourcesAssembler2;
 	
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public PagedModel<EntityModel<EquipoDTO>> getListadoEquipo(@RequestParam int page, @RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
 		
@@ -56,7 +57,8 @@ public class EquiposControladorRest {
 		});
 	}
 
-	@PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)			
+	@PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> crearEquipo(@Valid @RequestBody CreacionEquipoDTO crearEquipoDTO) {	
 		String idEquipo = servicioEquipo.crearEquipo(crearEquipoDTO.getNombre(), servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
 		if(idEquipo == null)
@@ -72,18 +74,21 @@ public class EquiposControladorRest {
 	}
 	
 	@PutMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) {
 		servicioEquipo.modificarEquipo(idEquipo, modificarEquipoDTO.getNombre(), servicioEquipo.dtoToModelEntrenador(modificarEquipoDTO.getEntrenadores()), servicioEquipo.dtoToModelJugador(modificarEquipoDTO.getJugadores()));
 		return ResponseEntity.noContent().build();
 	}	
 	
 	@DeleteMapping(value = "/{idEquipo}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> borrarEquipo(@PathVariable String idEquipo) {
 		servicioEquipo.borrarEquipo(idEquipo);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping(value = "/{idEquipo}/entrenamiento", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAnyAuthority('ENTRENADOR', 'JUGADOR')")
 	public PagedModel<EntityModel<EntrenamientoDTO>> listarEntrenamientos(@PathVariable String idEquipo, @RequestParam int page, @RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
 		Page<EntrenamientoDTO> listaEntrenamientosDTO = servicioEntrenamiento.listarEntrenamientos(idEquipo, paginacion);
@@ -94,8 +99,9 @@ public class EquiposControladorRest {
 	}
 	
 	@PostMapping(value = "/{idEquipo}/entrenamiento", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ENTRENADOR')")
 	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo, @Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) {
-		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, LocalDateTime.parse(programarEntrenamientoDTO.getFecha()), programarEntrenamientoDTO.getLugar());
+		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, programarEntrenamientoDTO.getFecha(), programarEntrenamientoDTO.getHora(), programarEntrenamientoDTO.getLugar());
 		if(idEntrenamiento == null)
 			return ResponseEntity.badRequest().build();
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}").buildAndExpand(idEntrenamiento).toUri();
@@ -103,6 +109,7 @@ public class EquiposControladorRest {
 	}
 	
 	@PutMapping(value = "/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('JUGADOR')")
 	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEntrenamiento, @PathVariable String idUsuario) {
 		servicioEntrenamiento.confirmarAsistencia(idEntrenamiento, idUsuario);
 		return ResponseEntity.noContent().build();

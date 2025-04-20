@@ -1,19 +1,19 @@
 package com.umu.springboot.rest;
 
-import com.umu.springboot.modelo.Asistencia;
+import java.util.List;
 
 public class EntrenamientoDTO {
 
 	private String idEntrenamiento;
 	private String horario;
 	private String lugar;
-	private String numAsistencias;
+	private List<AsistenciaDTO> asistencias;
 
-	public EntrenamientoDTO(String idEntrenamiento, String horario, String lugar, String numAsistencias) {
+	public EntrenamientoDTO(String idEntrenamiento, String horario, String lugar, List<AsistenciaDTO> asistencias) {
 		this.idEntrenamiento = idEntrenamiento;
 		this.horario = horario;
 		this.lugar = lugar;
-		this.numAsistencias = numAsistencias;
+		this.asistencias = asistencias;
 	}
 
 	public EntrenamientoDTO() {
@@ -43,12 +43,11 @@ public class EntrenamientoDTO {
 		this.lugar = lugar;
 	}
 
-	public String getNumAsistencias() {
-		return numAsistencias;
+	public List<AsistenciaDTO> getAsistencias() {
+		return asistencias;
 	}
 
-	public void setNumAsistencias(String numAsistencias) {
-		this.numAsistencias = numAsistencias;
+	public void setAsistencias(List<AsistenciaDTO> asistencias) {
+		this.asistencias = asistencias;
 	}
-
 }

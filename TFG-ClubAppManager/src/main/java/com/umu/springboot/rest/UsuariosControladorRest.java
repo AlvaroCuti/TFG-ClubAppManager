@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -112,6 +113,7 @@ public class UsuariosControladorRest {
 	}
 
 	@GetMapping(value = "/usuario")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public PagedModel<EntityModel<JugadorDTO>> filtrarJugadores(@RequestParam(required = false) String nombre,
 			@RequestParam(required = false) String tel, @RequestParam(required = false) String fechaNac,
 			@RequestParam(required = false) String email, @RequestParam(required = false) String emailTutor1,
@@ -127,6 +129,7 @@ public class UsuariosControladorRest {
 	}
 
 	@GetMapping(value = "/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ByteArrayResource> getInfoJugador(@PathVariable String idUsuario) {
 		JugadorInfoDTO dto = servicioUsuarios.descargarInfoUsuario(idUsuario);
 
@@ -162,6 +165,7 @@ public class UsuariosControladorRest {
 	}
 
 	@GetMapping(value = "/entrenador", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public PagedModel<EntityModel<EntrenadorCompletoDTO>> getListadoEntrenadores(@RequestParam int page,
 			@RequestParam int size) {
 		Pageable paginacion = PageRequest.of(page, size);
@@ -173,6 +177,7 @@ public class UsuariosControladorRest {
 	}
 
 	@PostMapping(value = "/entrenador")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> crearEntrenador(@RequestParam("crearEntrenadorDTO") String crearEntrenadorDTO,
 			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
 			@RequestParam("certDelitos") MultipartFile certDelitos) {
@@ -209,6 +214,7 @@ public class UsuariosControladorRest {
 	}
 
 	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE) // TODO cambiar DTO																								// que devuelve
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ByteArrayResource> getInfoEntrenador(@PathVariable String idEntrenador) {
 		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
 		
@@ -243,6 +249,7 @@ public class UsuariosControladorRest {
 	}
 
 	@PutMapping(value = "/entrenador/{idEntrenador}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
 			@RequestParam("modificarEntrenadorDTO") String modificarEntrenadorDTO,
 			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
@@ -264,7 +271,9 @@ public class UsuariosControladorRest {
 			e.printStackTrace();
 		}
 		
-		//TODO borrar fotos antiguas de la base de datos
+		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
+
+		servicioFotos.borrarFotos(dto.getDniDelantera(), dto.getDniTrasera(), dto.getCertDelitos());
 		
 		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, certDelitos);
 		
@@ -277,7 +286,10 @@ public class UsuariosControladorRest {
 	}
 
 	@DeleteMapping(value = "/entrenador/{idEntrenador}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> borrarEntrenador(@PathVariable String idEntrenador) {
+		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
+		servicioFotos.borrarFotos(dto.getDniDelantera(), dto.getDniTrasera(), dto.getCertDelitos());
 		servicioUsuarios.borrarEntrenador(idEntrenador);
 		return ResponseEntity.noContent().build();
 	}

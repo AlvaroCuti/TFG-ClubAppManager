@@ -13,7 +13,7 @@ public interface IServicioEntrenamiento {
 	
 	Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion);
 	
-	String programarEntrenamiento(String idEquipo, LocalDateTime fecha, String lugar);
+	String programarEntrenamiento(String idEquipo, String fecha, String hora, String lugar);
 	
 	void confirmarAsistencia(String idEntrenamiento, String idUsuario);
 }

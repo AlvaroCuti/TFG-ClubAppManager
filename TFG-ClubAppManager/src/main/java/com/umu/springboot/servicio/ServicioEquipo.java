@@ -71,12 +71,12 @@ public class ServicioEquipo implements IServicioEquipo {
 
 		Equipo equipo = new Equipo(nombre, usuarios.stream().map(Entrenador.class::cast).collect(Collectors.toList()));
 
+		String idEquipo = repositorioEquipo.save(equipo).getId();
+
 		usuarios.stream().filter(u -> u instanceof Entrenador).map(u -> (Entrenador) u).forEach(u -> {
 			u.addEquipo(equipo.getId());
 			repositorioUsuario.save((Usuario) u);
 		});
-
-		String idEquipo = repositorioEquipo.save(equipo).getId();
 
 		return idEquipo;
 	}

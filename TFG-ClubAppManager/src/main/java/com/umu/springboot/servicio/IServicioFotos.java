@@ -17,4 +17,6 @@ public interface IServicioFotos {
 			long dniTraseroTutor1, long dniFrontalTutor2, long dniTraseroTutor2);
 
 	List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long certDelitos);
+	
+	void borrarFotos(long dniFrontal, long dniTrasero, long certDelitos);
 }
