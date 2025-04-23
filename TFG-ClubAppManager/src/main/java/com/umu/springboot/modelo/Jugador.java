@@ -128,4 +128,8 @@ public class Jugador extends Usuario {
 		}
 		return true;
 	}
+	
+	public void borrarEquipo() {
+		this.equipo = null;
+	}
 }

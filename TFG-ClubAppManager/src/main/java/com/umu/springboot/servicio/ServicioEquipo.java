@@ -140,6 +140,15 @@ public class ServicioEquipo implements IServicioEquipo {
 		if (idEquipo == null || idEquipo.isEmpty())
 			return;
 
+		Equipo equipo = repositorioEquipo.findById(idEquipo).orElseGet(null);
+		
+		if(equipo == null)
+			return;
+		
+		equipo.getJugadores().stream().forEach(j -> {
+			j.borrarEquipo();
+		});
+				
 		repositorioEquipo.deleteById(idEquipo);
 		return;
 	}

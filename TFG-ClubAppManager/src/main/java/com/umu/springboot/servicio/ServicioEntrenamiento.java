@@ -44,7 +44,7 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
 		if (equipo == null)
-			return null;
+			return Page.empty();
 		
 		List<Entrenamiento> entrenamientos = equipo.getEntrenamientos();
 
