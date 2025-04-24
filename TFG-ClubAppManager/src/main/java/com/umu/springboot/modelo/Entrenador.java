@@ -67,5 +67,9 @@ public class Entrenador extends Usuario {
 		this.setDniTrasera(dniTrasera);
 		this.setCertificadoDelitosSexuales(certificadoDelitosSexuales);
 	}
+	
+	public void borrarEquipo(String idEquipo) {
+		this.equipos.remove(idEquipo);
+	}
 
 }

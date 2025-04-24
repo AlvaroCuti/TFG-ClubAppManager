@@ -148,6 +148,10 @@ public class ServicioEquipo implements IServicioEquipo {
 		equipo.getJugadores().stream().forEach(j -> {
 			j.borrarEquipo();
 		});
+		
+		equipo.getEntrenadores().stream().forEach(e -> {
+			e.borrarEquipo(equipo.getId());
+		});
 				
 		repositorioEquipo.deleteById(idEquipo);
 		return;

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.umu.springboot.modelo.Entrenador;
+import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
 import com.umu.springboot.repositorios.RepositorioEquipo;
@@ -283,9 +284,24 @@ public class ServicioUsuarios implements IServicioUsuarios {
 			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
 		Usuario usuario = repositorioUsuario.findById(telAntiguo).orElse(null);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
+        
+        List<String> equipos = ((Entrenador) usuario).getEquipos();
+		for (String string : equipos) {
+			Equipo e = repositorioEquipo.findById(string).orElse(null);
+			e.removeEntrenador(telAntiguo);
+			repositorioEquipo.save(e);
+		}
+		
 		((Entrenador) usuario).modificar(telNuevo, nombre, LocalDate.parse(fechaNac, formatter), email, pass, dniDelantera, dniTrasera,
 				certificadoDelitosSexuales);
+		
+		
+		for (String string : equipos) {
+			Equipo e = repositorioEquipo.findById(string).orElse(null);
+			e.addEntrenador((Entrenador)usuario);
+			repositorioEquipo.save(e);
+		}
+		
 		repositorioUsuario.deleteById(telAntiguo);
 		repositorioUsuario.save(usuario);
 		return;
