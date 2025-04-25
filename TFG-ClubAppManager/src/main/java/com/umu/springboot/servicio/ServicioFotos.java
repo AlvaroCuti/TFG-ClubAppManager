@@ -25,7 +25,7 @@ public class ServicioFotos implements IServicioFotos {
 
 	@Autowired
 	private RepositorioImagen repositorioImagen;
-	
+
 	@Autowired
 	private WebPUtilidades webPConverter;
 
@@ -39,7 +39,7 @@ public class ServicioFotos implements IServicioFotos {
 		return archivos.stream().filter(this::esArchivoValido).map(this::crearImagen).map(repositorioImagen::save)
 				.map(Imagen::getId).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<Long> almacenarFotos(MultipartFile dniFrontal, MultipartFile dniTrasero, MultipartFile certDelitos) {
 
@@ -52,32 +52,47 @@ public class ServicioFotos implements IServicioFotos {
 	@Override
 	public List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long dniFrontalTutor1, long dniTraseroTutor1,
 			long dniFrontalTutor2, long dniTraseroTutor2) {
-		
+
 		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, dniFrontalTutor1, dniTraseroTutor1,
 				dniFrontalTutor2, dniTraseroTutor2);
-		
-		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get).map(this::recuperarImagen).collect(Collectors.toList());		
+
+		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get)
+				.map(this::recuperarImagen).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long certDelitos) {
-		
+
 		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, certDelitos);
-		
-		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get).map(this::recuperarImagen).collect(Collectors.toList());		
+
+		return archivos.stream().map(repositorioImagen::findById).filter(Optional::isPresent).map(Optional::get)
+				.map(this::recuperarImagen).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public void borrarFotos(long dniFrontal, long dniTrasero, long certDelitos) {
 		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, certDelitos);
-		
+
 		for (Long long1 : archivos) {
 			if (repositorioImagen.existsById(long1))
 				repositorioImagen.deleteById(long1);
-		}		
+		}
 
 	}
-	
+
+	@Override
+	public void borrarFotos(long dniFrontal, long dniTrasero, long dniFrontalTutor1, long dniTraseroTutor1,
+			long dniFrontalTutor2, long dniTraseroTutor2) {
+		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, dniFrontal, dniTrasero, dniFrontalTutor1,
+				dniTraseroTutor1, dniFrontalTutor2, dniTraseroTutor2);
+
+		for (Long long1 : archivos) {
+			if (repositorioImagen.existsById(long1))
+				repositorioImagen.deleteById(long1);
+		}
+
+	}
+
 	private boolean esArchivoValido(MultipartFile file) {
 		return file != null && !file.isEmpty();
 	}
@@ -86,30 +101,31 @@ public class ServicioFotos implements IServicioFotos {
 		Imagen img = null;
 		try {
 			byte[] originalBytes = file.getBytes();
-	        byte[] webpBytes = webPConverter.convertirAWebP(originalBytes);
+			byte[] webpBytes = webPConverter.convertirAWebP(originalBytes);
 			img = new Imagen(file.getOriginalFilename(), webpBytes);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return img;
 	}
-	
+
 	private Imagen recuperarImagen(Imagen i) {
 		Imagen img = null;
 		try {
 			byte[] originalBytes = i.getContenido();
-			
+
 			BufferedImage bufferedImage = webPConverter.descomprimirWebP(originalBytes);
-			
+
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(bufferedImage, i.getNombre().substring(i.getNombre().lastIndexOf('.') + 1).toLowerCase(), byteArrayOutputStream); 
+			ImageIO.write(bufferedImage, i.getNombre().substring(i.getNombre().lastIndexOf('.') + 1).toLowerCase(),
+					byteArrayOutputStream);
 			byte[] imageBytes = byteArrayOutputStream.toByteArray();
-			
-			img = new Imagen(i.getNombre(), imageBytes);  
-			
+
+			img = new Imagen(i.getNombre(), imageBytes);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return img;
-}
+	}
 }

@@ -132,4 +132,5 @@ public class Jugador extends Usuario {
 	public void borrarEquipo() {
 		this.equipo = null;
 	}
+	
 }

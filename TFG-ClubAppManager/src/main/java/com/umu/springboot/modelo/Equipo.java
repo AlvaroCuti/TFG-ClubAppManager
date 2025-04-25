@@ -94,6 +94,11 @@ public class Equipo implements Identificable {
 		this.nombre = nombre;
 	}
 
+	public void addJugador(Jugador jugador) {
+		if (!this.jugadores.stream().anyMatch(j -> j.getTel().equals(jugador.getTel())))
+			this.jugadores.add(jugador);
+	}
+	
 	@Override
 	public String getId() {
 		return idEquipo;

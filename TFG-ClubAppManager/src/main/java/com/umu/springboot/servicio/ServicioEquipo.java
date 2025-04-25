@@ -82,6 +82,32 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
+	public void addJugadorAEquipo(String idEquipo, String idJugador) {
+		
+		if (idEquipo == null || idEquipo.isEmpty())
+			return;
+		
+		if (idJugador == null || idJugador.isEmpty())
+			return;
+		
+		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
+		Usuario user = repositorioUsuario.findById(idJugador).orElse(null);
+		Jugador j = (Jugador) user;
+		
+		if((equipo == null) || (user == null))
+			return;
+		
+		if(j.getEquipo() == null) {
+			equipo.addJugador(j);
+			j.setEquipo(equipo.getId());
+		}		
+		repositorioUsuario.save(user);
+		repositorioEquipo.save(equipo);
+		
+		return;
+	}
+	
+	@Override
 	public EquipoDTO getEquipo(String idEquipo) {
 
 		if (idEquipo == null || idEquipo.isEmpty())

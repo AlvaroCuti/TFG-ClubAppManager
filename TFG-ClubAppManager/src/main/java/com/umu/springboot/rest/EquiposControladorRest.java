@@ -67,6 +67,13 @@ public class EquiposControladorRest {
 		return ResponseEntity.created(url).build();
 	}
 
+	@PutMapping(value = "/{idEquipo}/jugador/{idJugador}")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public ResponseEntity<Void> addJugadorAEquipo(@PathVariable String idEquipo, @PathVariable String idJugador) {	
+		servicioEquipo.addJugadorAEquipo(idEquipo, idJugador);
+		return ResponseEntity.noContent().build();
+	}
+	
 	@GetMapping(value = "/{idEquipo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public EquipoDTO getInfoEquipo(@PathVariable String idEquipo) {
 		EquipoDTO equipoDTO = servicioEquipo.getEquipo(idEquipo);

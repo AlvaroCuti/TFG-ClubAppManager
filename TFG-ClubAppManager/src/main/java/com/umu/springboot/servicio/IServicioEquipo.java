@@ -20,6 +20,8 @@ public interface IServicioEquipo {
 	
 	String crearEquipo(String nombre, List<Usuario> entrenadores);
 	
+	void addJugadorAEquipo(String idEquipo, String idJugador);
+	
 	EquipoDTO getEquipo(String idEquipo);
 	
 	void modificarEquipo(String idEquipo, String nombre, List<Usuario> entrenadores, List<Usuario> jugadores);

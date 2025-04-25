@@ -103,9 +103,11 @@ public class UsuariosControladorRest {
 				creacionDTO.getFechaNac(), creacionDTO.getEmail(), creacionDTO.getPass(), fotos.get(0), fotos.get(1),
 				creacionDTO.getEmailTutor1(), fotos.get(2), fotos.get(3), creacionDTO.getEmailTutor2(), fotos.get(4),
 				fotos.get(5));
-		if (idUsuario == null)
+		if (idUsuario == null) {
+			servicioFotos.borrarFotos(fotos.get(0), fotos.get(1), fotos.get(2), fotos.get(3), fotos.get(4),
+					fotos.get(5));
 			return ResponseEntity.badRequest().build();
-
+		}
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idUsuario}").buildAndExpand(idUsuario)
 				.toUri();
 
@@ -157,7 +159,7 @@ public class UsuariosControladorRest {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"imagenes.zip\"").body(recurso);
 	}
-	
+
 	@GetMapping(value = "/usuario/{idUsuario}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
 	public EquipoIdDTO getEquipoDeJugador(@PathVariable String idUsuario) {
 		EquipoIdDTO equipoIdDTO = servicioUsuarios.getEquipoDeJugador(idUsuario);
@@ -181,7 +183,7 @@ public class UsuariosControladorRest {
 	public ResponseEntity<Void> crearEntrenador(@RequestParam("crearEntrenadorDTO") String crearEntrenadorDTO,
 			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
 			@RequestParam("certDelitos") MultipartFile certDelitos) {
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 
 		CrearEntrenadorDTO creacionDTO = null;
@@ -197,27 +199,30 @@ public class UsuariosControladorRest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, certDelitos);
-		
-		String idEntrenador = servicioUsuarios.crearEntrenador(creacionDTO.getTel(),
-				creacionDTO.getNombre(), creacionDTO.getFechaNac(), creacionDTO.getEmail(),
-				creacionDTO.getPass(), fotos.get(0), fotos.get(1),
+
+		String idEntrenador = servicioUsuarios.crearEntrenador(creacionDTO.getTel(), creacionDTO.getNombre(),
+				creacionDTO.getFechaNac(), creacionDTO.getEmail(), creacionDTO.getPass(), fotos.get(0), fotos.get(1),
 				fotos.get(2));
-		
-		if (idEntrenador == null)
+
+		if (idEntrenador == null) {
+			servicioFotos.borrarFotos(fotos.get(0), fotos.get(1), fotos.get(2));
 			return ResponseEntity.badRequest().build();
+		
+		}
 
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenador}").buildAndExpand(idEntrenador)
 				.toUri();
 		return ResponseEntity.created(url).build();
 	}
 
-	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE) // TODO cambiar DTO																								// que devuelve
+	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE) // TODO cambiar DTO
+																									// // que devuelve
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ByteArrayResource> getInfoEntrenador(@PathVariable String idEntrenador) {
 		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
-		
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zipOut = new ZipOutputStream(baos);
 
@@ -237,7 +242,7 @@ public class UsuariosControladorRest {
 		}
 
 		ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
-		
+
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documentos.zip\"").body(recurso);
 	}
@@ -254,7 +259,7 @@ public class UsuariosControladorRest {
 			@RequestParam("modificarEntrenadorDTO") String modificarEntrenadorDTO,
 			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
 			@RequestParam("certDelitos") MultipartFile certDelitos) {
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 
 		CrearEntrenadorDTO modificacionDTO = null;
@@ -270,18 +275,16 @@ public class UsuariosControladorRest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
 
 		servicioFotos.borrarFotos(dto.getDniDelantera(), dto.getDniTrasera(), dto.getCertDelitos());
-		
+
 		List<Long> fotos = servicioFotos.almacenarFotos(dniFrontal, dniTrasero, certDelitos);
-		
-		servicioUsuarios.modificarEntrenador(idEntrenador, modificacionDTO.getTel(),
-				modificacionDTO.getNombre(), modificacionDTO.getFechaNac(),
-				modificacionDTO.getEmail(), modificacionDTO.getPass(),
-				fotos.get(0), fotos.get(1),
-				fotos.get(2));
+
+		servicioUsuarios.modificarEntrenador(idEntrenador, modificacionDTO.getTel(), modificacionDTO.getNombre(),
+				modificacionDTO.getFechaNac(), modificacionDTO.getEmail(), modificacionDTO.getPass(), fotos.get(0),
+				fotos.get(1), fotos.get(2));
 		return ResponseEntity.noContent().build();
 	}
 
