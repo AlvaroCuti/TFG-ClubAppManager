@@ -122,7 +122,7 @@ public class ServicioFotos implements IServicioFotos {
 			byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
 			img = new Imagen(i.getNombre(), imageBytes);
-
+			img.setId(i.getId());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

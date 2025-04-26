@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,13 +48,16 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public ServicioUsuarios() {
 	}
 
 	@Override
 	public Map<String, Object> verificarCredenciales(String idUsuario, String pass) {
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElseGet(null);
-		if ((usuario == null)||(!usuario.getPass().equals(pass)))
+		if ((usuario == null)||(!passwordEncoder.matches(pass, usuario.getPass())))
 			return null;
 
 		Map<String, Object> claimsUsuario = utilidadesJWT.usuarioAClaims(usuario);
@@ -113,7 +117,9 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
-		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, pass, "JUGADOR", dniDelantera,
+        String passwordEncriptada = passwordEncoder.encode(pass);
+        
+		Jugador jugador = new Jugador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, passwordEncriptada, "JUGADOR", dniDelantera,
 				dniTrasera, emailTutor1, dniDelanteraTutor1, dniTraseraTutor1, emailTutor2, dniDelanteraTutor2,
 				dniTraseraTutor2);
 		
@@ -242,7 +248,9 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
-		Entrenador entrenador = new Entrenador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, pass, "ENTRENADOR",
+        String passwordEncriptada = passwordEncoder.encode(pass);
+        
+		Entrenador entrenador = new Entrenador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, passwordEncriptada, "ENTRENADOR",
 				dniDelantera, dniTrasera, certificadoDelitosSexuales); // TODO pass generada para los entrenadores
 
 		repositorioUsuario.save(entrenador);
