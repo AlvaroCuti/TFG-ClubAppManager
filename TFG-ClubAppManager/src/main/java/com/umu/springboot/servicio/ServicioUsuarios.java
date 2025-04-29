@@ -240,6 +240,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 //		if (dniTrasera == null || dniTrasera.isEmpty())
 //			throw new IllegalArgumentException("dniTrasera: no debe ser nulo ni vacio");
 //
+		
 //		if (certificadoDelitosSexuales == null || certificadoDelitosSexuales.isEmpty())
 //			throw new IllegalArgumentException("certificadoDelitosSexuales: no debe ser nulo ni vacio");
 
