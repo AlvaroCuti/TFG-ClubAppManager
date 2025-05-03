@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.umu.springboot.modelo.Categoria;
 import com.umu.springboot.servicio.IServicioEntrenamiento;
 import com.umu.springboot.servicio.IServicioEquipo;
 
@@ -60,7 +61,7 @@ public class EquiposControladorRest {
 	@PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> crearEquipo(@Valid @RequestBody CreacionEquipoDTO crearEquipoDTO) {	
-		String idEquipo = servicioEquipo.crearEquipo(crearEquipoDTO.getNombre(), servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
+		String idEquipo = servicioEquipo.crearEquipo(crearEquipoDTO.getNombre(), Categoria.valueOf(crearEquipoDTO.getCategoria()), servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
 		if(idEquipo == null)
 			return ResponseEntity.badRequest().build();
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEquipo}").buildAndExpand(idEquipo).toUri();
@@ -75,6 +76,7 @@ public class EquiposControladorRest {
 	}
 	
 	@GetMapping(value = "/{idEquipo}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public EquipoDTO getInfoEquipo(@PathVariable String idEquipo) {
 		EquipoDTO equipoDTO = servicioEquipo.getEquipo(idEquipo);
 		return equipoDTO;

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 @Entity
-public class Imagen {
+public class Archivo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,16 +17,20 @@ public class Imagen {
 	@Column(nullable = false)
 	private String nombre;
 	
+	@Column(nullable = false)
+	private String tipoMime;
+	
 	@Column(name = "contenido", columnDefinition = "bytea")
 	private byte[] contenido;
 
-	public Imagen() {
+	public Archivo() {
 		super();
 	}
 
-	public Imagen(String nombre, byte[] contenido) {
+	public Archivo(String nombre, byte[] contenido, String tipoMime) {
 		this.nombre = nombre;
 		this.contenido = contenido;
+		this.tipoMime = tipoMime;
 	}
 
 	public Long getId() {
@@ -53,4 +57,11 @@ public class Imagen {
 		this.contenido = contenido;
 	}
 
+	public String getTipoMime() {
+		return tipoMime;
+	}
+
+	public void setTipoMime(String tipoMime) {
+		this.tipoMime = tipoMime;
+	}
 }

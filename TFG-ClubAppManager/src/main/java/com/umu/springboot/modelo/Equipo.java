@@ -13,20 +13,23 @@ public class Equipo implements Identificable {
 	@Id
 	private String idEquipo;
 	private String nombre;
+	private Categoria categoria;
 	private List<Jugador> jugadores;
 	private List<Entrenador> entrenadores;
 	private List<Entrenamiento> entrenamientos;
 
-	public Equipo(String nombre, List<Jugador> jugadores, List<Entrenador> entrenadores) {
+	public Equipo(String nombre, Categoria cat, List<Jugador> jugadores, List<Entrenador> entrenadores) {
 		this.nombre = nombre;
+		this.categoria = cat;
 		this.idEquipo = null;
 		this.jugadores = jugadores;
 		this.entrenadores = entrenadores;
 		this.entrenamientos = new LinkedList<Entrenamiento>();
 	}
 
-	public Equipo(String nombre, List<Entrenador> entrenadores) {
+	public Equipo(String nombre, Categoria cat, List<Entrenador> entrenadores) {
 		this.nombre = nombre;
+		this.categoria = cat;
 		this.idEquipo = null;
 		this.jugadores = new LinkedList<Jugador>();
 		this.entrenadores = entrenadores;
@@ -92,6 +95,14 @@ public class Equipo implements Identificable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+	
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 
 	public void addJugador(Jugador jugador) {

@@ -39,7 +39,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.umu.springboot.modelo.Imagen;
+import com.umu.springboot.modelo.Archivo;
 import com.umu.springboot.servicio.IServicioFotos;
 import com.umu.springboot.servicio.IServicioUsuarios;
 
@@ -138,11 +138,11 @@ public class UsuariosControladorRest {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zipOut = new ZipOutputStream(baos);
 
-		List<Imagen> imagenes = servicioFotos.descargarFotos(dto.getDniDelantera(), dto.getDniTrasera(),
+		List<Archivo> imagenes = servicioFotos.descargarFotos(dto.getDniDelantera(), dto.getDniTrasera(),
 				dto.getDniDelanteraTutor1(), dto.getDniTraseraTutor1(), dto.getDniDelanteraTutor2(),
 				dto.getDniTraseraTutor2());
 		try {
-			for (Imagen imagen : imagenes) {
+			for (Archivo imagen : imagenes) {
 				ZipEntry zipEntry = new ZipEntry("ID-" + imagen.getId() + "-" + imagen.getNombre());
 				zipOut.putNextEntry(zipEntry);
 				zipOut.write(imagen.getContenido());
@@ -157,7 +157,7 @@ public class UsuariosControladorRest {
 		ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"imagenes.zip\"").body(recurso);
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"archivos.zip\"").body(recurso);
 	}
 
 	@GetMapping(value = "/usuario/{idUsuario}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -226,10 +226,10 @@ public class UsuariosControladorRest {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zipOut = new ZipOutputStream(baos);
 
-		List<Imagen> imagenes = servicioFotos.descargarFotos(dto.getDniDelantera(), dto.getDniTrasera(),
+		List<Archivo> imagenes = servicioFotos.descargarFotos(dto.getDniDelantera(), dto.getDniTrasera(),
 				dto.getCertDelitos());
 		try {
-			for (Imagen imagen : imagenes) {
+			for (Archivo imagen : imagenes) {
 				ZipEntry zipEntry = new ZipEntry("ID-" + imagen.getId() + "-" + imagen.getNombre());
 				zipOut.putNextEntry(zipEntry);
 				zipOut.write(imagen.getContenido());
@@ -244,7 +244,7 @@ public class UsuariosControladorRest {
 		ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documentos.zip\"").body(recurso);
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"archivos.zip\"").body(recurso);
 	}
 
 	@GetMapping(value = "/entrenador/{idEntrenador}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)

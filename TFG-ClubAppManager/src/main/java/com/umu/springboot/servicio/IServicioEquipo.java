@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.umu.springboot.modelo.Categoria;
 import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
@@ -16,9 +17,9 @@ public interface IServicioEquipo {
 	
 	Page<EquipoDTO> listarEquipos(Pageable paginacion);
 	
-	String crearEquipo(String nombre, List<Jugador> jugadores, List<Entrenador> entrenadores);
+	String crearEquipo(String nombre, Categoria cat, List<Jugador> jugadores, List<Entrenador> entrenadores);
 	
-	String crearEquipo(String nombre, List<Usuario> entrenadores);
+	String crearEquipo(String nombre, Categoria cat, List<Usuario> entrenadores);
 	
 	void addJugadorAEquipo(String idEquipo, String idJugador);
 	

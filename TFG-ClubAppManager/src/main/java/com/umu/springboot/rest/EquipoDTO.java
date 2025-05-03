@@ -1,19 +1,28 @@
 package com.umu.springboot.rest;
 
+import java.util.List;
+
 public class EquipoDTO {
 	private String nombre;
+	private String categoria;
 	private String idEquipo;
 	private String numeroJugadores;
-	private String entrenadores;
+	private List<UsuarioElementoDTO> entrenadores;
+	private List<UsuarioElementoDTO> jugadores;
 
-	public EquipoDTO(String nombre, String idEquipo, String numeroJugadores, String entrenadores) {
+	public EquipoDTO(String nombre, String categoria, String idEquipo, String numeroJugadores,
+			List<UsuarioElementoDTO> entrenadores, List<UsuarioElementoDTO> jugadores) {
+		super();
 		this.nombre = nombre;
+		this.categoria = categoria;
 		this.idEquipo = idEquipo;
 		this.numeroJugadores = numeroJugadores;
 		this.entrenadores = entrenadores;
+		this.jugadores = jugadores;
 	}
 
 	public EquipoDTO() {
+		super();
 	}
 
 	public String getIdEquipo() {
@@ -32,14 +41,6 @@ public class EquipoDTO {
 		this.numeroJugadores = numeroJugadores;
 	}
 
-	public String getEntrenadores() {
-		return entrenadores;
-	}
-
-	public void setEntrenadores(String entrenadores) {
-		this.entrenadores = entrenadores;
-	}
-
 	public String getNombre() {
 		return nombre;
 	}
@@ -48,4 +49,27 @@ public class EquipoDTO {
 		this.nombre = nombre;
 	}
 
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	public List<UsuarioElementoDTO> getEntrenadores() {
+		return entrenadores;
+	}
+
+	public void setEntrenadores(List<UsuarioElementoDTO> entrenadores) {
+		this.entrenadores = entrenadores;
+	}
+
+	public List<UsuarioElementoDTO> getJugadores() {
+		return jugadores;
+	}
+
+	public void setJugadores(List<UsuarioElementoDTO> jugadores) {
+		this.jugadores = jugadores;
+	}
 }

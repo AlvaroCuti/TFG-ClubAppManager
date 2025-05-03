@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.umu.springboot.modelo.Imagen;
+import com.umu.springboot.modelo.Archivo;
+
 
 public interface IServicioFotos {
 
@@ -13,10 +14,10 @@ public interface IServicioFotos {
 	
 	List<Long> almacenarFotos(MultipartFile dniFrontal, MultipartFile dniTrasero, MultipartFile certDelitos);
 	
-	List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long dniFrontalTutor1,
+	List<Archivo> descargarFotos(long dniFrontal, long dniTrasero, long dniFrontalTutor1,
 			long dniTraseroTutor1, long dniFrontalTutor2, long dniTraseroTutor2);
 
-	List<Imagen> descargarFotos(long dniFrontal, long dniTrasero, long certDelitos);
+	List<Archivo> descargarFotos(long dniFrontal, long dniTrasero, long certDelitos);
 	
 	void borrarFotos(long dniFrontal, long dniTrasero, long certDelitos);
 	

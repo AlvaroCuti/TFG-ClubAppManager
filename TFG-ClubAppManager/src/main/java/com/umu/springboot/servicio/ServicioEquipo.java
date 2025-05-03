@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.umu.springboot.modelo.Categoria;
 import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
@@ -18,8 +19,8 @@ import com.umu.springboot.repositorios.RepositorioEquipoMongo;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.EquipoDTO;
-import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorIdDTO;
+import com.umu.springboot.rest.UsuarioElementoDTO;
 
 @Service
 @Transactional
@@ -39,15 +40,19 @@ public class ServicioEquipo implements IServicioEquipo {
 			String entrenadores = e.getEntrenadores().stream().map(Entrenador::getNombre)
 					.collect(Collectors.joining(", "));
 			equipoDTO.setNombre(e.getNombre());
+			equipoDTO.setCategoria(e.getCategoria().toString());
 			equipoDTO.setIdEquipo(e.getId());
-			equipoDTO.setEntrenadores(entrenadores);
+			equipoDTO.setEntrenadores(e.getEntrenadores().stream()
+											.map(eq -> new UsuarioElementoDTO(eq.getTel(), eq.getNombre()))
+											.collect(Collectors.toList()));
+			
 			equipoDTO.setNumeroJugadores(Integer.toString(numJugadores));
 			return equipoDTO;
 		});
 	}
 
 	@Override
-	public String crearEquipo(String nombre, List<Jugador> jugadores, List<Entrenador> entrenadores) {
+	public String crearEquipo(String nombre, Categoria cat, List<Jugador> jugadores, List<Entrenador> entrenadores) {
 
 		if (jugadores == null || jugadores.isEmpty())
 			return null;
@@ -55,7 +60,7 @@ public class ServicioEquipo implements IServicioEquipo {
 		if (entrenadores == null || entrenadores.isEmpty())
 			return null;
 
-		Equipo equipo = new Equipo(nombre, jugadores, entrenadores);
+		Equipo equipo = new Equipo(nombre, cat, jugadores, entrenadores);
 
 		String idEquipo = repositorioEquipo.save(equipo).getId();
 
@@ -64,12 +69,12 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public String crearEquipo(String nombre, List<Usuario> usuarios) {
+	public String crearEquipo(String nombre, Categoria cat,  List<Usuario> usuarios) {
 
 		if (usuarios == null || usuarios.isEmpty() || usuarios.contains(null))
 			return null;
 
-		Equipo equipo = new Equipo(nombre, usuarios.stream().map(Entrenador.class::cast).collect(Collectors.toList()));
+		Equipo equipo = new Equipo(nombre, cat ,usuarios.stream().map(Entrenador.class::cast).collect(Collectors.toList()));
 
 		String idEquipo = repositorioEquipo.save(equipo).getId();
 
@@ -117,10 +122,15 @@ public class ServicioEquipo implements IServicioEquipo {
 
 		int numJugadores = (equipo.getJugadores() != null) ? equipo.getJugadores().size() : 0;
 
-		String entrenadores = equipo.getEntrenadores().stream().map(Entrenador::getNombre)
-				.collect(Collectors.joining(", "));
-
-		EquipoDTO dto = new EquipoDTO(equipo.getNombre(), idEquipo, Integer.toString(numJugadores), entrenadores);
+		List<UsuarioElementoDTO> entrenadores = equipo.getEntrenadores().stream()
+			.map(e -> new UsuarioElementoDTO(e.getTel(), e.getNombre()))
+			.collect(Collectors.toList());
+		
+		List<UsuarioElementoDTO> jugadores = equipo.getJugadores().stream()
+				.map(e -> new UsuarioElementoDTO(e.getTel(), e.getNombre()))
+				.collect(Collectors.toList());
+		
+		EquipoDTO dto = new EquipoDTO(equipo.getNombre(),equipo.getCategoria().toString(), idEquipo, Integer.toString(numJugadores), entrenadores, jugadores);
 		return dto;
 
 	}
