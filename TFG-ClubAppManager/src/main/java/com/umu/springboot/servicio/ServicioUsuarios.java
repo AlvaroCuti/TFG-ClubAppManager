@@ -165,7 +165,19 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
         Page<Usuario> usuariosPaginados = new PageImpl<>(usuarios, pageable, total); 
         
-        Page<JugadorDTO> jugadores = usuariosPaginados.map(usuario -> new JugadorDTO((Jugador) usuario));
+        Page<JugadorDTO> jugadores = usuariosPaginados.map(usuario -> {
+            Jugador jugador = (Jugador) usuario;
+            String nombreEquipo = null;
+
+            if (jugador.getEquipo() != null) {
+                Equipo e = repositorioEquipo.findById(jugador.getEquipo()).orElse(null);
+                if (e != null) {
+                    nombreEquipo = e.getNombre();
+                }
+            }
+
+            return new JugadorDTO(jugador, nombreEquipo); // Constructor con nombre de equipo
+        });        
         return jugadores;
     }
 	
@@ -211,6 +223,12 @@ public class ServicioUsuarios implements IServicioUsuarios {
 			entrenador.setNombre(e.getNombre());
 			entrenador.setFechaNac(e.getFechaNac().toString());
 			entrenador.setEmail(e.getEmail());
+			if (entrenador.getEquipo() != null) {
+                Equipo equipo = repositorioEquipo.findById(entrenador.getEquipo()).orElse(null);
+                if (equipo != null) {
+        			entrenador.setEquipo(equipo.getNombre());
+                }
+            }
 			return entrenador;
 		});
 	}

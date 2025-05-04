@@ -11,24 +11,28 @@ public class JugadorDTO {
 	private String email;
 	private String emailTutor1;
 	private String emailTutor2;
+	private String equipo;
 
 	public JugadorDTO(String tel, String nombre, LocalDate fechaNac, String email, String emailTutor1,
-			String emailTutor2) {
+			String emailTutor2, String equipo) {
+		super();
 		this.tel = tel;
 		this.nombre = nombre;
 		this.fechaNac = fechaNac;
 		this.email = email;
 		this.emailTutor1 = emailTutor1;
 		this.emailTutor2 = emailTutor2;
+		this.equipo = equipo;
 	}
 
-	public JugadorDTO(Jugador jugador) {
+	public JugadorDTO(Jugador jugador, String nombreEquipo) {
 		this.tel = jugador.getTel();
 		this.nombre = jugador.getNombre();
 		this.fechaNac = jugador.getFechaNac();
 		this.email = jugador.getEmail();
 		this.emailTutor1 = jugador.getEmailTutor1();
 		this.emailTutor2 = jugador.getEmailTutor2();
+		this.equipo = nombreEquipo;
 	}
 
 	public JugadorDTO() {
@@ -82,4 +86,12 @@ public class JugadorDTO {
 		this.emailTutor2 = emailTutor2;
 	}
 
+	public String getEquipo() {
+		return equipo;
+	}
+
+	public void setEquipo(String equipo) {
+		this.equipo = equipo;
+	}
+	
 }

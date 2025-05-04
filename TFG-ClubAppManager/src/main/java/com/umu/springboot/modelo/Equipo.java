@@ -46,6 +46,10 @@ public class Equipo implements Identificable {
 	public void setJugadores(List<Jugador> jugadores) {
 		this.jugadores = jugadores;
 	}
+	
+	public void removeJugadores(String e) {
+		jugadores.removeIf(jugador -> jugador.getTel().equals(e));
+	}
 
 	public List<Entrenador> getEntrenadores() {
 		return entrenadores;

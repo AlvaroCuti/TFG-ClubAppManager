@@ -75,6 +75,13 @@ public class EquiposControladorRest {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@DeleteMapping(value = "/{idEquipo}/jugador/{idJugador}")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public ResponseEntity<Void> removeJugadorDeEquipo(@PathVariable String idEquipo, @PathVariable String idJugador) {	
+		servicioEquipo.removeUsuarioDeEquipo(idEquipo, idJugador);
+		return ResponseEntity.noContent().build();
+	}
+	
 	@GetMapping(value = "/{idEquipo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public EquipoDTO getInfoEquipo(@PathVariable String idEquipo) {
