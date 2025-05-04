@@ -57,7 +57,7 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 			EntrenamientoDTO entrenamientoDTO = new EntrenamientoDTO();
 			entrenamientoDTO.setIdEntrenamiento(e.getId());
 			entrenamientoDTO.setLugar(e.getLugar());
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm");
 			entrenamientoDTO.setHorario(e.getHorario().format(formatter));
 
 			List<AsistenciaDTO> asistenciasDTO = e.getAsistencias().stream().map(a -> {
@@ -107,16 +107,23 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	}
 
 	@Override
-	public void confirmarAsistencia(String idEntrenamiento, String idUsuario) {
+	public void confirmarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario) {
 
 		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
 			return;
 
 		if ((idUsuario == null) || (idUsuario.isEmpty()))
 			return;
+		
+		if ((idEquipo == null) || (idEquipo.isEmpty()))
+			return;
 
+		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null); 
+		if (equipo == null)
+			return;
+		
 		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
-		if (entrenamiento == null)
+		if ((entrenamiento == null) || (LocalDateTime.now().isAfter(entrenamiento.getHorario())))
 			return;
 
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
@@ -128,12 +135,57 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		if ((entrenamiento.comprobarAsistencia(asistencia)) && (((Jugador) usuario).comprobarAsistencia(asistencia))) {
 			entrenamiento.añadirAsistencias(asistencia);
 			((Jugador) usuario).añadirAsistencia(asistencia);
-		}else {
-			return;
+
+			List<Entrenamiento> entrenamientos = equipo.getEntrenamientos();
+			for (int i = 0; i < entrenamientos.size(); i++) {
+				if (entrenamientos.get(i).getId().equals(idEntrenamiento)) {
+					entrenamientos.set(i, entrenamiento);
+					break;
+				}
+			}
 		}
 
 		repositorioEntrenamiento.save(entrenamiento);
 		repositorioUsuario.save(usuario);
+		repositorioEquipo.save(equipo);
+	}
+
+	
+	@Override
+	public void cancelarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario) {
+
+		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
+			return;
+
+		if ((idUsuario == null) || (idUsuario.isEmpty()))
+			return;
+
+		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null); 
+		if (equipo == null)
+			return;
+		
+		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
+		if ((entrenamiento == null) || (LocalDateTime.now().isAfter(entrenamiento.getHorario())))
+			return;
+
+		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+		if (usuario == null)
+			return;
+
+		((Jugador)usuario).eliminarAsistencia(idEntrenamiento, idUsuario);
+		entrenamiento.eliminarAsistencia(idEntrenamiento, idUsuario);
+		
+		List<Entrenamiento> entrenamientos = equipo.getEntrenamientos();
+		for (int i = 0; i < entrenamientos.size(); i++) {
+			if (entrenamientos.get(i).getId().equals(idEntrenamiento)) {
+				entrenamientos.set(i, entrenamiento);
+				break;
+			}
+		}
+		
+		repositorioEntrenamiento.save(entrenamiento);
+		repositorioUsuario.save(usuario);
+		repositorioEquipo.save(equipo);
 
 		return;
 

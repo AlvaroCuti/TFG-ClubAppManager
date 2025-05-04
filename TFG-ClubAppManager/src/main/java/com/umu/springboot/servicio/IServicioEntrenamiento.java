@@ -1,12 +1,7 @@
 package com.umu.springboot.servicio;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import com.umu.springboot.modelo.Entrenamiento;
 import com.umu.springboot.rest.EntrenamientoDTO;
 
 public interface IServicioEntrenamiento {
@@ -15,5 +10,7 @@ public interface IServicioEntrenamiento {
 	
 	String programarEntrenamiento(String idEquipo, String fecha, String hora, String lugar);
 	
-	void confirmarAsistencia(String idEntrenamiento, String idUsuario);
+	void confirmarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario);
+	
+	void cancelarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario);
 }

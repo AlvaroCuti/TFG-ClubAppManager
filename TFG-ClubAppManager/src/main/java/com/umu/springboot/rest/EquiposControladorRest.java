@@ -117,11 +117,17 @@ public class EquiposControladorRest {
 		return ResponseEntity.created(url).build();
 	}
 	
-	@PutMapping(value = "/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "{idEquipo}/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('JUGADOR')")
-	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEntrenamiento, @PathVariable String idUsuario) {
-		servicioEntrenamiento.confirmarAsistencia(idEntrenamiento, idUsuario);
+	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @PathVariable String idUsuario) {
+		servicioEntrenamiento.confirmarAsistencia(idEquipo,idEntrenamiento, idUsuario);
 		return ResponseEntity.noContent().build();
 	}
 	
+	@DeleteMapping(value = "{idEquipo}/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('JUGADOR')")
+	public ResponseEntity<Void> cancelarAsistencia(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @PathVariable String idUsuario) {
+		servicioEntrenamiento.cancelarAsistencia(idEquipo, idEntrenamiento, idUsuario);
+		return ResponseEntity.noContent().build();
+	}
 }

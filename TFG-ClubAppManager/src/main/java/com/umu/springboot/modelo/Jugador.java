@@ -129,6 +129,16 @@ public class Jugador extends Usuario {
 		return true;
 	}
 	
+	public boolean eliminarAsistencia(String idEntrenamiento, String idUsuario) {
+		for (Asistencia asistencia : asistencias) {
+			if(asistencia.comprobarAsistencia(idEntrenamiento, idUsuario)) {
+				this.asistencias.remove(asistencia);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void borrarEquipo() {
 		this.equipo = null;
 	}

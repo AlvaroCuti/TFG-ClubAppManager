@@ -11,7 +11,7 @@ public class Asistencia {
 		this.idJugador = idJugador;
 		this.idEntrenamiento = idEntrenamiento;
 	}
-
+	
 	public String getIdJugador() {
 		return idJugador;
 	}
@@ -28,4 +28,9 @@ public class Asistencia {
 		this.idEntrenamiento = idEntrenamiento;
 	}
 
+	public boolean comprobarAsistencia(String idEntrenamiento, String idUsuario) {
+		if((this.idEntrenamiento.equals(idEntrenamiento))&&(this.idJugador.equals(idUsuario)))
+			return true;
+		return false;
+	}
 }

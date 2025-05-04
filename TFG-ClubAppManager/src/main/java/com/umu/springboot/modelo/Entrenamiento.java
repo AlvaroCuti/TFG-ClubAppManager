@@ -59,6 +59,17 @@ public class Entrenamiento implements Identificable {
 		}
 		return true;
 	}
+	
+	public boolean eliminarAsistencia(String idEntrenamiento, String idUsuario) {
+		for (Asistencia asistencia : asistencias) {
+			if(asistencia.comprobarAsistencia(idEntrenamiento, idUsuario)) {
+				this.asistencias.remove(asistencia);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 
 	@Override
 	public String getId() {
