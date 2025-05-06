@@ -161,6 +161,7 @@ public class UsuariosControladorRest {
 	}
 
 	@GetMapping(value = "/usuario/{idUsuario}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('JUGADOR')")
 	public EquipoIdDTO getEquipoDeJugador(@PathVariable String idUsuario) {
 		EquipoIdDTO equipoIdDTO = servicioUsuarios.getEquipoDeJugador(idUsuario);
 		return equipoIdDTO;
@@ -217,8 +218,7 @@ public class UsuariosControladorRest {
 		return ResponseEntity.created(url).build();
 	}
 
-	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE) // TODO cambiar DTO
-																									// // que devuelve
+	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE) 
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ByteArrayResource> getInfoEntrenador(@PathVariable String idEntrenador) {
 		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
@@ -248,6 +248,7 @@ public class UsuariosControladorRest {
 	}
 
 	@GetMapping(value = "/entrenador/{idEntrenador}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ENTRENADOR')")
 	public EquiposIdsDTO getEquiposDeEntrenador(@PathVariable String idEntrenador) {
 		EquiposIdsDTO equiposIdsDTO = servicioUsuarios.getEquiposDeEntrenador(idEntrenador);
 		return equiposIdsDTO;
@@ -287,6 +288,18 @@ public class UsuariosControladorRest {
 				fotos.get(1), fotos.get(2));
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PutMapping(value = "/usuario/{idusuario}/pass", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ENTRENADOR')")
+	public ResponseEntity<?> cambiarPass(@PathVariable String idUsuario, @Valid @RequestBody CambiarPassDTO cambiarPassDTO) {
+		boolean confirmacion =servicioUsuarios.cambiarPass(idUsuario, cambiarPassDTO.getOldPass(), cambiarPassDTO.getNewPass());
+
+	    if (confirmacion) {
+	        return ResponseEntity.noContent().build();
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Contraseña actual incorrecta o cambio inválido.");
+	    }
+	}
 
 	@DeleteMapping(value = "/entrenador/{idEntrenador}")
 	@PreAuthorize("hasAuthority('ADMIN')")
@@ -296,7 +309,7 @@ public class UsuariosControladorRest {
 		servicioUsuarios.borrarEntrenador(idEntrenador);
 		return ResponseEntity.noContent().build();
 	}
-
+	
 //	@ExceptionHandler(IllegalArgumentException.class)										//TODO REVISAR
 //	public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
 //	    return ResponseEntity.badRequest().body(ex.getMessage());

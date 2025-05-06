@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Usuario;
 
 import io.jsonwebtoken.Claims;
@@ -38,6 +39,9 @@ public class JwtUtilidades {
 		mapaClaims.put("nombre", usuario.getNombre());
 		mapaClaims.put("pass", usuario.getPass());
 		mapaClaims.put("rol", usuario.getRol());
+		if(usuario instanceof Entrenador) {
+			mapaClaims.put("debeCambiarPass", ((Entrenador)usuario).isDebeCambiarPassword());
+		}
 		return mapaClaims;
 	}
 	

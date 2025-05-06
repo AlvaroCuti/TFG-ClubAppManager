@@ -3,9 +3,9 @@ package com.umu.springboot.rest;
 import java.util.List;
 
 public class EquiposIdsDTO {
-	List<EquipoIdDTO> equipos;
-
-	public EquiposIdsDTO(List<EquipoIdDTO> equipos) {
+	List<EquipoIdYNombreDTO> equipos;
+	
+	public EquiposIdsDTO(List<EquipoIdYNombreDTO> equipos) {
 		super();
 		this.equipos = equipos;
 	}
@@ -14,11 +14,11 @@ public class EquiposIdsDTO {
 		super();
 	}
 
-	public List<EquipoIdDTO> getEquipos() {
+	public List<EquipoIdYNombreDTO> getEquipos() {
 		return equipos;
 	}
 
-	public void setEquipos(List<EquipoIdDTO> equipos) {
+	public void setEquipos(List<EquipoIdYNombreDTO> equipos) {
 		this.equipos = equipos;
 	}
 }

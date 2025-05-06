@@ -5,12 +5,14 @@ public class ProgramacionEntrenamientoDTO {
 	private String fecha;
 	private String hora;
 	private String lugar;
+	private String entrenador;
 
-	public ProgramacionEntrenamientoDTO(String fecha, String hora, String lugar) {
+	public ProgramacionEntrenamientoDTO(String fecha, String hora, String lugar, String entrenador) {
 		super();
 		this.fecha = fecha;
 		this.hora = hora;
 		this.lugar = lugar;
+		this.entrenador = entrenador;
 	}
 
 	public ProgramacionEntrenamientoDTO() {
@@ -39,6 +41,14 @@ public class ProgramacionEntrenamientoDTO {
 
 	public void setLugar(String lugar) {
 		this.lugar = lugar;
+	}
+
+	public String getEntrenador() {
+		return entrenador;
+	}
+
+	public void setEntrenador(String entrenador) {
+		this.entrenador = entrenador;
 	}
 
 }

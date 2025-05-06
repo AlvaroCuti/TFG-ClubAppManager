@@ -10,6 +10,7 @@ public class Entrenador extends Usuario {
 	private long certificadoDelitosSexuales; // TODO
 	
 	private List<String> equipos;
+	private boolean debeCambiarPassword;
 
 	public Entrenador(String tel, String nombre, LocalDate fechaNac, String email, String pass, String rol,
 			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
@@ -18,6 +19,7 @@ public class Entrenador extends Usuario {
 		this.dniTrasera = dniTrasera;
 		this.certificadoDelitosSexuales = certificadoDelitosSexuales;
 		this.equipos = new LinkedList<String>();
+		this.debeCambiarPassword = true;
 	}
 
 	public long getDniDelantera() {
@@ -70,6 +72,14 @@ public class Entrenador extends Usuario {
 	
 	public void borrarEquipo(String idEquipo) {
 		this.equipos.remove(idEquipo);
+	}
+
+	public boolean isDebeCambiarPassword() {
+		return debeCambiarPassword;
+	}
+
+	public void setDebeCambiarPassword(boolean debeCambiarPassword) {
+		this.debeCambiarPassword = debeCambiarPassword;
 	}
 
 }

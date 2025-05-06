@@ -114,6 +114,10 @@ public class Equipo implements Identificable {
 			this.jugadores.add(jugador);
 	}
 	
+	public void removeEntrenamiento(Entrenamiento entrenamiento) {
+		this.entrenamientos.removeIf(e -> e.getId().equals(entrenamiento.getId()));
+	}
+	
 	@Override
 	public String getId() {
 		return idEquipo;

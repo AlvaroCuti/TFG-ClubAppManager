@@ -8,7 +8,9 @@ public interface IServicioEntrenamiento {
 	
 	Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion);
 	
-	String programarEntrenamiento(String idEquipo, String fecha, String hora, String lugar);
+	String programarEntrenamiento(String idEquipo, String entrenador, String fecha, String hora, String lugar);
+	
+	void eliminarEntrenamiento(String idEquipo, String idEntrenamiento, String entrenador);
 	
 	void confirmarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario);
 	

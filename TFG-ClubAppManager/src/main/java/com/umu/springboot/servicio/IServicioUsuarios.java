@@ -39,6 +39,9 @@ public interface IServicioUsuarios {
 	void modificarEntrenador(String telAntiguo, String telNuevo, String nombre, String fechaNac, String email, String pass, long dniDelantera,
 			long dniTrasera, long certificadoDelitosSexuales);
 
+	boolean cambiarPass(String idusuario, String oldPass, String newPass);
+	
 	void borrarEntrenador(String idEntrenador);
 
+	
 }

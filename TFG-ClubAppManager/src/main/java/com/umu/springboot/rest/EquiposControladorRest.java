@@ -117,11 +117,18 @@ public class EquiposControladorRest {
 	@PostMapping(value = "/{idEquipo}/entrenamiento", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ENTRENADOR')")
 	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo, @Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) {
-		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, programarEntrenamientoDTO.getFecha(), programarEntrenamientoDTO.getHora(), programarEntrenamientoDTO.getLugar());
+		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, programarEntrenamientoDTO.getEntrenador(), programarEntrenamientoDTO.getFecha(), programarEntrenamientoDTO.getHora(), programarEntrenamientoDTO.getLugar());
 		if(idEntrenamiento == null)
 			return ResponseEntity.badRequest().build();
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}").buildAndExpand(idEntrenamiento).toUri();
 		return ResponseEntity.created(url).build();
+	}
+	
+	@DeleteMapping(value = "/{idEquipo}/entrenamiento/{idEntrenamiento}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('ENTRENADOR')")
+	public ResponseEntity<Void> eliminarEntrenamiento(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @Valid @RequestBody JugadorIdDTO jugadorIdDTO) {
+		servicioEntrenamiento.eliminarEntrenamiento(idEquipo, idEntrenamiento, jugadorIdDTO.getTel());
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping(value = "{idEquipo}/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)

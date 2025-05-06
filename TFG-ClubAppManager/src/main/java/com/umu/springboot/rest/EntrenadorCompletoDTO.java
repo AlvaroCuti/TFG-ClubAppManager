@@ -7,17 +7,17 @@ public class EntrenadorCompletoDTO {
 	private String nombre;
 	private String fechaNac;
 	private String email;
-	private String equipo;
+	private String equipos;
 
 	public EntrenadorCompletoDTO() {
 	}
 
-	public EntrenadorCompletoDTO(String tel, String nombre, String fechaNac, String email, String equipo) {
+	public EntrenadorCompletoDTO(String tel, String nombre, String fechaNac, String email, String equipos) {
 		this.tel = tel;
 		this.nombre = nombre;
 		this.fechaNac = fechaNac;
 		this.email = email;
-		this.equipo = equipo;
+		this.equipos = equipos;
 	}
 
 	public String getTel() {
@@ -52,11 +52,11 @@ public class EntrenadorCompletoDTO {
 		this.email = email;
 	}
 
-	public String getEquipo() {
-		return equipo;
+	public String getEquipos() {
+		return equipos;
 	}
 
-	public void setEquipo(String equipo) {
-		this.equipo = equipo;
+	public void setEquipos(String equipos) {
+		this.equipos = equipos;
 	}
 }

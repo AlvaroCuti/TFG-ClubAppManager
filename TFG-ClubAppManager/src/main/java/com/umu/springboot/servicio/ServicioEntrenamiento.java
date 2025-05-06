@@ -76,7 +76,7 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	}
 
 	@Override
-	public String programarEntrenamiento(String idEquipo, String fecha, String hora, String lugar) {
+	public String programarEntrenamiento(String idEquipo, String entrenador, String fecha, String hora, String lugar) {
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
 			return null;
 
@@ -88,7 +88,7 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
-		if (equipo == null)
+		if ((equipo == null)||(equipo.getEntrenadores().stream().noneMatch(e -> e.getTel().equals(entrenador))))
 			return null;
 
 		LocalDate fechaF = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -106,6 +106,33 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		return idEntrenamiento;
 	}
 
+	@Override
+	public void eliminarEntrenamiento(String idEquipo, String idEntrenamiento, String entrenador) {
+		if ((idEquipo == null) || (idEquipo.isEmpty()))
+			return;
+
+		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
+			return;
+
+		if ((entrenador == null) || (entrenador.isEmpty()))
+			return;
+
+		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
+
+		if ((equipo == null)||(equipo.getEntrenadores().stream().noneMatch(e -> e.getTel().equals(entrenador))))
+			return;
+		
+		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
+		
+		if (entrenamiento == null)
+			return;
+
+		equipo.removeEntrenamiento(entrenamiento);
+
+		repositorioEntrenamiento.deleteById(idEntrenamiento);
+		repositorioEquipo.save(equipo);
+	}
+	
 	@Override
 	public void confirmarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario) {
 
@@ -127,7 +154,7 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 			return;
 
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
-		if (usuario == null)
+		if ((usuario == null)||(equipo.getJugadores().stream().noneMatch(j -> j.getTel().equals(idUsuario))))
 			return;
 
 		Asistencia asistencia = new Asistencia(idUsuario, idEntrenamiento);
@@ -169,7 +196,7 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 			return;
 
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
-		if (usuario == null)
+		if ((usuario == null)||(equipo.getJugadores().stream().noneMatch(j -> j.getTel().equals(idUsuario))))
 			return;
 
 		((Jugador)usuario).eliminarAsistencia(idEntrenamiento, idUsuario);

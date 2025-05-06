@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.umu.springboot.repositorios.RepositorioUsuario;
 import com.umu.springboot.rest.EntrenadorCompletoDTO;
 import com.umu.springboot.rest.EntrenadorDTO;
 import com.umu.springboot.rest.EquipoIdDTO;
+import com.umu.springboot.rest.EquipoIdYNombreDTO;
 import com.umu.springboot.rest.EquiposIdsDTO;
 import com.umu.springboot.rest.JugadorDTO;
 import com.umu.springboot.rest.JugadorInfoDTO;
@@ -223,12 +225,15 @@ public class ServicioUsuarios implements IServicioUsuarios {
 			entrenador.setNombre(e.getNombre());
 			entrenador.setFechaNac(e.getFechaNac().toString());
 			entrenador.setEmail(e.getEmail());
-			if (entrenador.getEquipo() != null) {
-                Equipo equipo = repositorioEquipo.findById(entrenador.getEquipo()).orElse(null);
-                if (equipo != null) {
-        			entrenador.setEquipo(equipo.getNombre());
-                }
-            }
+			if (e.getEquipos() != null) {
+			    String equiposFinal = e.getEquipos().stream()
+			        .map(id -> repositorioEquipo.findById(id).orElse(null))
+			        .filter(Objects::nonNull)
+			        .map(Equipo::getNombre)
+			        .collect(Collectors.joining(", "));
+			    entrenador.setEquipos(equiposFinal);
+			}
+
 			return entrenador;
 		});
 	}
@@ -299,8 +304,11 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		
 		Entrenador entrenador = (Entrenador) repositorioUsuario.findById(idEntrenador).orElse(null);
 
-		List<EquipoIdDTO> equipos = entrenador.getEquipos().stream()
-				.map(EquipoIdDTO::new).collect(Collectors.toList());	
+		List<EquipoIdYNombreDTO> equipos = entrenador.getEquipos().stream()
+				.map(equipo -> {
+					Equipo e = repositorioEquipo.findById(equipo).orElse(null);
+					return new EquipoIdYNombreDTO(equipo, e.getNombre());
+				}).collect(Collectors.toList());	
 		
 		return new EquiposIdsDTO(equipos);
 	}
@@ -333,6 +341,24 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		return;
 	}
 
+	@Override
+	public boolean cambiarPass(String idUsuario, String oldPass, String newPass) {
+		
+		if (idUsuario == null || idUsuario.isEmpty())
+			return false;
+		
+		Usuario usuario = repositorioUsuario.findById(idUsuario).orElseGet(null);
+		
+		if ((usuario == null)||(!passwordEncoder.matches(oldPass, usuario.getPass())))
+			return false;
+		
+		usuario.setPass(passwordEncoder.encode(newPass));
+		((Entrenador)usuario).setDebeCambiarPassword(false);
+		repositorioUsuario.save(usuario);
+		
+		return true;
+	}
+	
 	@Override
 	public void borrarEntrenador(String idEntrenador) {
 		if (idEntrenador == null || idEntrenador.isEmpty())
