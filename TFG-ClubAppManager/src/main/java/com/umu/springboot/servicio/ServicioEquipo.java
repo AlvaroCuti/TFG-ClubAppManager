@@ -215,10 +215,12 @@ public class ServicioEquipo implements IServicioEquipo {
 		
 		equipo.getJugadores().stream().forEach(j -> {
 			j.borrarEquipo();
+			repositorioUsuario.save((Usuario)j);
 		});
 		
 		equipo.getEntrenadores().stream().forEach(e -> {
 			e.borrarEquipo(equipo.getId());
+			repositorioUsuario.save((Entrenador)e);
 		});
 				
 		repositorioEquipo.deleteById(idEquipo);

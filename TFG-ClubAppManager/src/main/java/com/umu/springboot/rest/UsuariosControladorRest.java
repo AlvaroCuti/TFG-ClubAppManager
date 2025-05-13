@@ -289,7 +289,7 @@ public class UsuariosControladorRest {
 		return ResponseEntity.noContent().build();
 	}
 	
-	@PutMapping(value = "/usuario/{idusuario}/pass", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/usuario/{idUsuario}/pass", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ENTRENADOR')")
 	public ResponseEntity<?> cambiarPass(@PathVariable String idUsuario, @Valid @RequestBody CambiarPassDTO cambiarPassDTO) {
 		boolean confirmacion =servicioUsuarios.cambiarPass(idUsuario, cambiarPassDTO.getOldPass(), cambiarPassDTO.getNewPass());
