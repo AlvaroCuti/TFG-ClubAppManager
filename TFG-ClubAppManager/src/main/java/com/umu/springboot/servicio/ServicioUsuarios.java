@@ -23,6 +23,7 @@ import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
+import com.umu.springboot.repositorios.EntidadNoEncontrada;
 import com.umu.springboot.repositorios.RepositorioEquipo;
 import com.umu.springboot.repositorios.RepositorioUsuario;
 import com.umu.springboot.rest.EntrenadorCompletoDTO;
@@ -39,17 +40,13 @@ import com.umu.springboot.utils.JwtUtilidades;
 public class ServicioUsuarios implements IServicioUsuarios {
 
 	@Autowired
-	private RepositorioEquipo repositorioEquipo; // TODO
-
+	private RepositorioEquipo repositorioEquipo;
 	@Autowired
-	private RepositorioUsuario repositorioUsuario; // TODO
-
+	private RepositorioUsuario repositorioUsuario;
 	@Autowired
 	private JwtUtilidades utilidadesJWT;
-
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -73,7 +70,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	@Override
 	public String darDeAltaJugador(String tel, String nombre, String fechaNac, String email, String pass,
 			long dniDelantera, long dniTrasera, String emailTutor1, long dniDelanteraTutor1,
-			long dniTraseraTutor1, String emailTutor2, long dniDelanteraTutor2, long dniTraseraTutor2) {
+			long dniTraseraTutor1, String emailTutor2, long dniDelanteraTutor2, long dniTraseraTutor2) throws IllegalArgumentException{
 
 		if (tel == null || tel.isEmpty())
 			throw new IllegalArgumentException("tel: no debe ser nulo ni vacio");
@@ -89,30 +86,30 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
 		if (pass == null || pass.isEmpty())
 			throw new IllegalArgumentException("pass: no debe ser nulo ni vacio");
-//		
-//		if (dniDelantera == null || dniDelantera.isEmpty())
-//			throw new IllegalArgumentException("dniDelantera: no debe ser nulo ni vacio");
-//		
-//		if (dniTrasera == null || dniTrasera.isEmpty())
-//			throw new IllegalArgumentException("dniTrasera: no debe ser nulo ni vacio");
+		
+		if (dniDelantera < 0)
+			throw new IllegalArgumentException("dniDelantera: no debe ser menor de cero");
+		
+		if (dniTrasera < 0)
+			throw new IllegalArgumentException("dniTrasera: no debe ser menor de cero");
 		
 		if (emailTutor1 == null || emailTutor1.isEmpty())
 			throw new IllegalArgumentException("emailTutor1: no debe ser nulo ni vacio");
-//		
-//		if (dniDelanteraTutor1 == null || dniDelanteraTutor1.isEmpty())
-//			throw new IllegalArgumentException("dniDelanteraTutor1: no debe ser nulo ni vacio");
-//		
-//		if (dniTraseraTutor1 == null || dniTraseraTutor1.isEmpty())
-//			throw new IllegalArgumentException("dniTraseraTutor1: no debe ser nulo ni vacio");
+		
+		if (dniDelanteraTutor1 < 0)
+			throw new IllegalArgumentException("dniDelanteraTutor1: no debe ser menor de cero");
+		
+		if (dniTraseraTutor1 < 0)
+			throw new IllegalArgumentException("dniTraseraTutor1: no debe ser menor de cero");
 		
 		if (emailTutor2 == null || emailTutor2.isEmpty())
 			throw new IllegalArgumentException("emailTutor2: no debe ser nulo ni vacio");
 		
-//		if (dniDelanteraTutor2 == null || dniDelanteraTutor2.isEmpty())
-//			throw new IllegalArgumentException("dniDelanteraTutor2: no debe ser nulo ni vacio");
-//
-//		if (dniTraseraTutor2 == null || dniTraseraTutor2.isEmpty())
-//			throw new IllegalArgumentException("dniTraseraTutor2: no debe ser nulo ni vacio");
+		if (dniDelanteraTutor2 < 0)
+			throw new IllegalArgumentException("dniDelanteraTutor2: no debe ser menor de cero");
+
+		if (dniTraseraTutor2 < 0)
+			throw new IllegalArgumentException("dniTraseraTutor2: no debe ser menor de cero");
 
 		if (repositorioUsuario.existsById(tel))
 			return null;
@@ -134,7 +131,6 @@ public class ServicioUsuarios implements IServicioUsuarios {
                                                  String emailTutor1, String emailTutor2, Pageable pageable) {
         Query query = new Query();
         List<Criteria> criterios = new ArrayList<>();
-
         criterios.add(Criteria.where("rol").is("JUGADOR"));
         // Agregar filtros dinámicos solo si no son null ni vacíos
         if (nombre != null && !nombre.isEmpty()) {
@@ -155,7 +151,6 @@ public class ServicioUsuarios implements IServicioUsuarios {
         if (emailTutor2 != null && !emailTutor2.isEmpty()) {
             criterios.add(Criteria.where("emailTutor2").is(emailTutor2));
         }
-
         // Si hay criterios, agregarlos a la consulta
         if (!criterios.isEmpty()) {
             query.addCriteria(new Criteria().andOperator(criterios.toArray(new Criteria[0])));
@@ -183,14 +178,13 @@ public class ServicioUsuarios implements IServicioUsuarios {
         return jugadores;
     }
 	
-
 	@Override
-	public JugadorInfoDTO descargarInfoUsuario(String idUsuario) { // TODO DTO de devolver
+	public JugadorInfoDTO descargarInfoUsuario(String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{ 
 		if (idUsuario == null || idUsuario.isEmpty())
-			return null;
+			throw new IllegalArgumentException("idUsuario: no debe ser nulo ni vacio");
 
 		if(!repositorioUsuario.existsById(idUsuario))
-			return null;
+			throw new EntidadNoEncontrada("idUsuario: no existe el id");
 		
 		Jugador jugador = (Jugador) repositorioUsuario.findById(idUsuario).orElse(null);
 
@@ -202,12 +196,12 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	}
 
 	@Override
-	public EquipoIdDTO getEquipoDeJugador(String idUsuario) {
+	public EquipoIdDTO getEquipoDeJugador(String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 		if (idUsuario == null || idUsuario.isEmpty())
-			return null;
+			throw new IllegalArgumentException("idUsuario: no debe ser nulo ni vacio");
 
 		if(!repositorioUsuario.existsById(idUsuario))
-			return null;
+			throw new EntidadNoEncontrada("idUsuario: no existe el id");
 		
 		Jugador jugador = (Jugador) repositorioUsuario.findById(idUsuario).orElse(null);
 
@@ -240,7 +234,7 @@ public class ServicioUsuarios implements IServicioUsuarios {
 
 	@Override
 	public String crearEntrenador(String tel, String nombre, String fechaNac, String email, String pass,
-			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) {
+			long dniDelantera, long dniTrasera, long certificadoDelitosSexuales) throws IllegalArgumentException, EntidadNoEncontrada{
 
 		if (tel == null || tel.isEmpty())
 			throw new IllegalArgumentException("tel: no debe ser nulo ni vacio");
@@ -257,24 +251,24 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		if (pass == null || pass.isEmpty())
 			throw new IllegalArgumentException("pass: no debe ser nulo ni vacio");
 
-//		if (dniDelantera == null || dniDelantera.isEmpty())
-//			throw new IllegalArgumentException("dniDelantera: no debe ser nulo ni vacio");
-//
-//		if (dniTrasera == null || dniTrasera.isEmpty())
-//			throw new IllegalArgumentException("dniTrasera: no debe ser nulo ni vacio");
-//
-//		if (certificadoDelitosSexuales == null || certificadoDelitosSexuales.isEmpty())
-//			throw new IllegalArgumentException("certificadoDelitosSexuales: no debe ser nulo ni vacio");
+		if (dniDelantera < 0)
+			throw new IllegalArgumentException("dniDelantera: no debe menor de cero");
+
+		if (dniTrasera < 0)
+			throw new IllegalArgumentException("dniTrasera: no debe menor de cerp");
+
+		if (certificadoDelitosSexuales < 0)
+			throw new IllegalArgumentException("certificadoDelitosSexuales: no debe menor de cero");
 
 		if (repositorioUsuario.existsById(tel))
-			return null;
+			throw new EntidadNoEncontrada("tel: no existe el id");
 		
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
         String passwordEncriptada = passwordEncoder.encode(pass);
         
 		Entrenador entrenador = new Entrenador(tel, nombre, LocalDate.parse(fechaNac, formatter), email, passwordEncriptada, "ENTRENADOR",
-				dniDelantera, dniTrasera, certificadoDelitosSexuales); // TODO pass generada para los entrenadores
+				dniDelantera, dniTrasera, certificadoDelitosSexuales);
 
 		repositorioUsuario.save(entrenador);
 
@@ -282,25 +276,25 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	}
 
 	@Override
-	public EntrenadorDTO getEntrenador(String idEntrenador) {
+	public EntrenadorDTO getEntrenador(String idEntrenador) throws IllegalArgumentException, EntidadNoEncontrada{
 		if (idEntrenador == null || idEntrenador.isEmpty())
-			return null;
+			throw new IllegalArgumentException("idEntrenador: no debe ser nulo ni vacio");
 
 		if(!repositorioUsuario.existsById(idEntrenador))
-			return null;
+			throw new EntidadNoEncontrada("idEntrenador: no existe el id");
 		
 		Entrenador entrenador = (Entrenador) repositorioUsuario.findById(idEntrenador).orElse(null);
-		EntrenadorDTO dto = new EntrenadorDTO(entrenador.getTel(), entrenador.getDniDelantera(), entrenador.getDniTrasera(), entrenador.getCertificadoDelitosSexuales()); // TODO no esta bien
+		EntrenadorDTO dto = new EntrenadorDTO(entrenador.getTel(), entrenador.getDniDelantera(), entrenador.getDniTrasera(), entrenador.getCertificadoDelitosSexuales());
 		return dto;
 	}
 
 	@Override
-	public EquiposIdsDTO getEquiposDeEntrenador(String idEntrenador) {
+	public EquiposIdsDTO getEquiposDeEntrenador(String idEntrenador) throws IllegalArgumentException, EntidadNoEncontrada{
 		if (idEntrenador == null || idEntrenador.isEmpty())
-			return null;
+			throw new IllegalArgumentException("idEntrenador: no debe ser nulo ni vacio");
 
 		if(!repositorioUsuario.existsById(idEntrenador))
-			return null;
+			throw new EntidadNoEncontrada("idEntrenador: no existe el id");
 		
 		Entrenador entrenador = (Entrenador) repositorioUsuario.findById(idEntrenador).orElse(null);
 
@@ -342,15 +336,15 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	}
 
 	@Override
-	public boolean cambiarPass(String idUsuario, String oldPass, String newPass) {
+	public boolean cambiarPass(String idUsuario, String oldPass, String newPass) throws IllegalArgumentException, EntidadNoEncontrada{
 		
 		if (idUsuario == null || idUsuario.isEmpty())
-			return false;
+			throw new IllegalArgumentException("idUsuario: no debe ser nulo ni vacio");
 		
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElseGet(null);
 		
 		if ((usuario == null)||(!passwordEncoder.matches(oldPass, usuario.getPass())))
-			return false;
+			throw new EntidadNoEncontrada("usuario: no existe el id");
 		
 		usuario.setPass(passwordEncoder.encode(newPass));
 		((Entrenador)usuario).setDebeCambiarPassword(false);
@@ -360,9 +354,9 @@ public class ServicioUsuarios implements IServicioUsuarios {
 	}
 	
 	@Override
-	public void borrarEntrenador(String idEntrenador) {
+	public void borrarEntrenador(String idEntrenador) throws IllegalArgumentException{
 		if (idEntrenador == null || idEntrenador.isEmpty())
-			return;
+			throw new IllegalArgumentException("idEntrenador: no debe ser nulo ni vacio");
 
 		repositorioUsuario.deleteById(idEntrenador);
 

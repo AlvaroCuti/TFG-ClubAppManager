@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Entrenador extends Usuario {
-	private long dniDelantera; // TODO
-	private long dniTrasera; // TODO
-	private long certificadoDelitosSexuales; // TODO
+	private long dniDelantera;
+	private long dniTrasera;
+	private long certificadoDelitosSexuales;
 	
 	private List<String> equipos;
 	private boolean debeCambiarPassword;

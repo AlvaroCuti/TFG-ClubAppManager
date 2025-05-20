@@ -1,7 +1,6 @@
 package com.umu.springboot.rest;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 
 import javax.validation.Valid;
 
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.umu.springboot.modelo.Categoria;
+import com.umu.springboot.repositorios.EntidadNoEncontrada;
 import com.umu.springboot.servicio.IServicioEntrenamiento;
 import com.umu.springboot.servicio.IServicioEquipo;
 
@@ -60,9 +60,12 @@ public class EquiposControladorRest {
 
 	@PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> crearEquipo(@Valid @RequestBody CreacionEquipoDTO crearEquipoDTO) {	
-		String idEquipo = servicioEquipo.crearEquipo(crearEquipoDTO.getNombre(), Categoria.valueOf(crearEquipoDTO.getCategoria()), servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
-		if(idEquipo == null)
+	public ResponseEntity<Void> crearEquipo(@Valid @RequestBody CreacionEquipoDTO crearEquipoDTO) throws IllegalArgumentException{
+		
+		String idEquipo = servicioEquipo.crearEquipo(crearEquipoDTO.getNombre(),
+				Categoria.valueOf(crearEquipoDTO.getCategoria()),
+				servicioEquipo.dtoToModelEntrenador(crearEquipoDTO.getEntrenadores()));
+		if (idEquipo == null)
 			return ResponseEntity.badRequest().build();
 		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEquipo}").buildAndExpand(idEquipo).toUri();
 		return ResponseEntity.created(url).build();
@@ -70,42 +73,42 @@ public class EquiposControladorRest {
 
 	@PutMapping(value = "/{idEquipo}/jugador/{idJugador}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> addJugadorAEquipo(@PathVariable String idEquipo, @PathVariable String idJugador) {	
+	public ResponseEntity<Void> addJugadorAEquipo(@PathVariable String idEquipo, @PathVariable String idJugador) throws IllegalArgumentException, EntidadNoEncontrada {	
 		servicioEquipo.addJugadorAEquipo(idEquipo, idJugador);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping(value = "/{idEquipo}/jugador/{idJugador}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> removeJugadorDeEquipo(@PathVariable String idEquipo, @PathVariable String idJugador) {	
+	public ResponseEntity<Void> removeJugadorDeEquipo(@PathVariable String idEquipo, @PathVariable String idJugador) throws IllegalArgumentException, EntidadNoEncontrada {	
 		servicioEquipo.removeUsuarioDeEquipo(idEquipo, idJugador);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping(value = "/{idEquipo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public EquipoDTO getInfoEquipo(@PathVariable String idEquipo) {
+	public EquipoDTO getInfoEquipo(@PathVariable String idEquipo) throws IllegalArgumentException{
 		EquipoDTO equipoDTO = servicioEquipo.getEquipo(idEquipo);
 		return equipoDTO;
 	}
 	
 	@PutMapping(value = "/{idEquipo}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) {
+	public ResponseEntity<Void> modificarEquipo(@PathVariable String idEquipo, @Valid @RequestBody ModificacionEquipoDTO modificarEquipoDTO) throws IllegalArgumentException{
 		servicioEquipo.modificarEquipo(idEquipo, modificarEquipoDTO.getNombre(), servicioEquipo.dtoToModelEntrenador(modificarEquipoDTO.getEntrenadores()), servicioEquipo.dtoToModelJugador(modificarEquipoDTO.getJugadores()));
 		return ResponseEntity.noContent().build();
 	}	
 	
 	@DeleteMapping(value = "/{idEquipo}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> borrarEquipo(@PathVariable String idEquipo) {
+	public ResponseEntity<Void> borrarEquipo(@PathVariable String idEquipo) throws IllegalArgumentException, EntidadNoEncontrada {
 		servicioEquipo.borrarEquipo(idEquipo);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping(value = "/{idEquipo}/entrenamiento", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAnyAuthority('ENTRENADOR', 'JUGADOR')")
-	public PagedModel<EntityModel<EntrenamientoDTO>> listarEntrenamientos(@PathVariable String idEquipo, @RequestParam int page, @RequestParam int size) {
+	public PagedModel<EntityModel<EntrenamientoDTO>> listarEntrenamientos(@PathVariable String idEquipo, @RequestParam int page, @RequestParam int size) throws IllegalArgumentException{
 		Pageable paginacion = PageRequest.of(page, size);
 		Page<EntrenamientoDTO> listaEntrenamientosDTO = servicioEntrenamiento.listarEntrenamientos(idEquipo, paginacion);
 		return this.pagedResourcesAssembler2.toModel(listaEntrenamientosDTO, entrenamiento -> {
@@ -116,31 +119,36 @@ public class EquiposControladorRest {
 	
 	@PostMapping(value = "/{idEquipo}/entrenamiento", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ENTRENADOR')")
-	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo, @Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) {
-		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo, programarEntrenamientoDTO.getEntrenador(), programarEntrenamientoDTO.getFecha(), programarEntrenamientoDTO.getHora(), programarEntrenamientoDTO.getLugar());
-		if(idEntrenamiento == null)
+	public ResponseEntity<Void> programarEntrenamiento(@PathVariable String idEquipo,
+			@Valid @RequestBody ProgramacionEntrenamientoDTO programarEntrenamientoDTO) throws IllegalArgumentException, EntidadNoEncontrada{
+		
+		String idEntrenamiento = servicioEntrenamiento.programarEntrenamiento(idEquipo,
+				programarEntrenamientoDTO.getEntrenador(), programarEntrenamientoDTO.getFecha(),
+				programarEntrenamientoDTO.getHora(), programarEntrenamientoDTO.getLugar());
+		if (idEntrenamiento == null)
 			return ResponseEntity.badRequest().build();
-		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}").buildAndExpand(idEntrenamiento).toUri();
+		URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idEntrenamiento}")
+				.buildAndExpand(idEntrenamiento).toUri();
 		return ResponseEntity.created(url).build();
 	}
 	
 	@DeleteMapping(value = "/{idEquipo}/entrenamiento/{idEntrenamiento}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ENTRENADOR')")
-	public ResponseEntity<Void> eliminarEntrenamiento(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @Valid @RequestBody JugadorIdDTO jugadorIdDTO) {
+	public ResponseEntity<Void> eliminarEntrenamiento(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @Valid @RequestBody JugadorIdDTO jugadorIdDTO) throws IllegalArgumentException, EntidadNoEncontrada{
 		servicioEntrenamiento.eliminarEntrenamiento(idEquipo, idEntrenamiento, jugadorIdDTO.getTel());
 		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping(value = "{idEquipo}/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('JUGADOR')")
-	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @PathVariable String idUsuario) {
+	public ResponseEntity<Void> confirmarAsistencia(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @PathVariable String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 		servicioEntrenamiento.confirmarAsistencia(idEquipo,idEntrenamiento, idUsuario);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping(value = "{idEquipo}/entrenamiento/{idEntrenamiento}/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('JUGADOR')")
-	public ResponseEntity<Void> cancelarAsistencia(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @PathVariable String idUsuario) {
+	public ResponseEntity<Void> cancelarAsistencia(@PathVariable String idEquipo, @PathVariable String idEntrenamiento, @PathVariable String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 		servicioEntrenamiento.cancelarAsistencia(idEquipo, idEntrenamiento, idUsuario);
 		return ResponseEntity.noContent().build();
 	}

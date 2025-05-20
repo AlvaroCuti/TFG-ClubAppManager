@@ -76,16 +76,13 @@ public class ServicioFotos implements IServicioFotos {
 
 		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, dniFrontalTutor1, dniTraseroTutor1,
 				dniFrontalTutor2, dniTraseroTutor2);
-
 		return archivos.stream().map(repositorioArchivo::findById).filter(Optional::isPresent).map(Optional::get)
 				.map(this::recuperarImagen).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Archivo> descargarFotos(long dniFrontal, long dniTrasero, long certDelitos) {
-
 		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, certDelitos);
-
 		return archivos.stream()
 			    .map(repositorioArchivo::findById)
 			    .filter(Optional::isPresent)
@@ -94,7 +91,7 @@ public class ServicioFotos implements IServicioFotos {
 			        if (!"application/pdf".equalsIgnoreCase(archivo.getTipoMime())) {
 			            return recuperarImagen(archivo);
 			        } else {
-			            return archivo; // No procesar si es PDF
+			            return archivo;
 			        }
 			    })
 			    .collect(Collectors.toList());
@@ -104,7 +101,6 @@ public class ServicioFotos implements IServicioFotos {
 	@Override
 	public void borrarFotos(long dniFrontal, long dniTrasero, long certDelitos) {
 		List<Long> archivos = Arrays.asList(dniFrontal, dniTrasero, certDelitos);
-
 		for (Long long1 : archivos) {
 			if (repositorioArchivo.existsById(long1))
 				repositorioArchivo.deleteById(long1);

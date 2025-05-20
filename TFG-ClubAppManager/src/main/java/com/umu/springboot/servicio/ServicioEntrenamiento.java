@@ -19,6 +19,7 @@ import com.umu.springboot.modelo.Entrenamiento;
 import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
+import com.umu.springboot.repositorios.EntidadNoEncontrada;
 import com.umu.springboot.repositorios.RepositorioEntrenamientoMongo;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
@@ -37,9 +38,9 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	private RepositorioEntrenamientoMongo repositorioEntrenamiento; // TODO
 
 	@Override
-	public Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion) {
+	public Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion)  throws IllegalArgumentException{
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
-			return null;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
@@ -76,20 +77,20 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	}
 
 	@Override
-	public String programarEntrenamiento(String idEquipo, String entrenador, String fecha, String hora, String lugar) {
+	public String programarEntrenamiento(String idEquipo, String entrenador, String fecha, String hora, String lugar) throws IllegalArgumentException, EntidadNoEncontrada{
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
-			return null;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
 		if (fecha == null)
-			return null;
+			throw new IllegalArgumentException("fecha: no debe ser nulo ni vacio");
 
 		if ((lugar == null) || (lugar.isEmpty()))
-			return null;
+			throw new IllegalArgumentException("lugar: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
 		if ((equipo == null)||(equipo.getEntrenadores().stream().noneMatch(e -> e.getTel().equals(entrenador))))
-			return null;
+			throw new EntidadNoEncontrada("equipo: no existe el id");
 
 		LocalDate fechaF = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		LocalTime horaF = LocalTime.parse(hora, DateTimeFormatter.ofPattern("HH:mm"));
@@ -107,25 +108,25 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	}
 
 	@Override
-	public void eliminarEntrenamiento(String idEquipo, String idEntrenamiento, String entrenador) {
+	public void eliminarEntrenamiento(String idEquipo, String idEntrenamiento, String entrenador) throws IllegalArgumentException, EntidadNoEncontrada{
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
-			return;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
 		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
-			return;
+			throw new IllegalArgumentException("idEntrenamiento: no debe ser nulo ni vacio");
 
 		if ((entrenador == null) || (entrenador.isEmpty()))
-			return;
+			throw new IllegalArgumentException("entrenador: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
 		if ((equipo == null)||(equipo.getEntrenadores().stream().noneMatch(e -> e.getTel().equals(entrenador))))
-			return;
+			throw new EntidadNoEncontrada("equipo: no existe el id");
 		
 		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
 		
 		if (entrenamiento == null)
-			return;
+			throw new EntidadNoEncontrada("entrenamiento: no existe el id");
 
 		equipo.removeEntrenamiento(entrenamiento);
 
@@ -134,28 +135,28 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 	}
 	
 	@Override
-	public void confirmarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario) {
+	public void confirmarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 
 		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
-			return;
+			throw new IllegalArgumentException("idEntrenamiento: no debe ser nulo ni vacio");
 
 		if ((idUsuario == null) || (idUsuario.isEmpty()))
-			return;
+			throw new IllegalArgumentException("idUsuario: no debe ser nulo ni vacio");
 		
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
-			return;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null); 
 		if (equipo == null)
-			return;
+			throw new EntidadNoEncontrada("equipo: no existe el id");
 		
 		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
 		if ((entrenamiento == null) || (LocalDateTime.now().isAfter(entrenamiento.getHorario())))
-			return;
+			throw new EntidadNoEncontrada("entrenamiento: no existe el id");
 
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
 		if ((usuario == null)||(equipo.getJugadores().stream().noneMatch(j -> j.getTel().equals(idUsuario))))
-			return;
+			throw new EntidadNoEncontrada("usuario: no existe el id");
 
 		Asistencia asistencia = new Asistencia(idUsuario, idEntrenamiento);
 
@@ -177,27 +178,26 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		repositorioEquipo.save(equipo);
 	}
 
-	
 	@Override
-	public void cancelarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario) {
+	public void cancelarAsistencia(String idEquipo, String idEntrenamiento, String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 
 		if ((idEntrenamiento == null) || (idEntrenamiento.isEmpty()))
-			return;
+			throw new IllegalArgumentException("idEntrenamiento: no debe ser nulo ni vacio");
 
 		if ((idUsuario == null) || (idUsuario.isEmpty()))
-			return;
+			throw new IllegalArgumentException("idEntrenamiento: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null); 
 		if (equipo == null)
-			return;
+			throw new EntidadNoEncontrada("equipo: no existe el id");
 		
 		Entrenamiento entrenamiento = repositorioEntrenamiento.findById(idEntrenamiento).orElse(null);
 		if ((entrenamiento == null) || (LocalDateTime.now().isAfter(entrenamiento.getHorario())))
-			return;
+			throw new EntidadNoEncontrada("entrenamiento: no existe el id");
 
 		Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
 		if ((usuario == null)||(equipo.getJugadores().stream().noneMatch(j -> j.getTel().equals(idUsuario))))
-			return;
+			throw new EntidadNoEncontrada("usuario: no existe el id");
 
 		((Jugador)usuario).eliminarAsistencia(idEntrenamiento, idUsuario);
 		entrenamiento.eliminarAsistencia(idEntrenamiento, idUsuario);

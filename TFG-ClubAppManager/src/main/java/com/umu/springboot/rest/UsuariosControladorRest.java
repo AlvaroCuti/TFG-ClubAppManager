@@ -40,6 +40,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umu.springboot.modelo.Archivo;
+import com.umu.springboot.repositorios.EntidadNoEncontrada;
 import com.umu.springboot.servicio.IServicioFotos;
 import com.umu.springboot.servicio.IServicioUsuarios;
 
@@ -78,7 +79,7 @@ public class UsuariosControladorRest {
 			@RequestParam("dniFrontalTutor1") MultipartFile dniFrontalTutor1,
 			@RequestParam("dniTraseroTutor1") MultipartFile dniTraseroTutor1,
 			@RequestParam("dniFrontalTutor2") MultipartFile dniFrontalTutor2,
-			@RequestParam("dniTraseroTutor2") MultipartFile dniTraseroTutor2) {
+			@RequestParam("dniTraseroTutor2") MultipartFile dniTraseroTutor2) throws IllegalArgumentException{
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -86,13 +87,10 @@ public class UsuariosControladorRest {
 		try {
 			creacionDTO = mapper.readValue(creacionDTOString, CreacionJugadorDTO.class);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -132,7 +130,7 @@ public class UsuariosControladorRest {
 
 	@GetMapping(value = "/usuario/{idUsuario}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<ByteArrayResource> getInfoJugador(@PathVariable String idUsuario) {
+	public ResponseEntity<ByteArrayResource> getInfoJugador(@PathVariable String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 		JugadorInfoDTO dto = servicioUsuarios.descargarInfoUsuario(idUsuario);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -162,7 +160,7 @@ public class UsuariosControladorRest {
 
 	@GetMapping(value = "/usuario/{idUsuario}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('JUGADOR')")
-	public EquipoIdDTO getEquipoDeJugador(@PathVariable String idUsuario) {
+	public EquipoIdDTO getEquipoDeJugador(@PathVariable String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 		EquipoIdDTO equipoIdDTO = servicioUsuarios.getEquipoDeJugador(idUsuario);
 		return equipoIdDTO;
 	}
@@ -183,7 +181,7 @@ public class UsuariosControladorRest {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> crearEntrenador(@RequestParam("crearEntrenadorDTO") String crearEntrenadorDTO,
 			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
-			@RequestParam("certDelitos") MultipartFile certDelitos) {
+			@RequestParam("certDelitos") MultipartFile certDelitos) throws IllegalArgumentException, EntidadNoEncontrada{
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -220,7 +218,7 @@ public class UsuariosControladorRest {
 
 	@GetMapping(value = "/entrenador/{idEntrenador}", produces = MediaType.APPLICATION_JSON_VALUE) 
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<ByteArrayResource> getInfoEntrenador(@PathVariable String idEntrenador) {
+	public ResponseEntity<ByteArrayResource> getInfoEntrenador(@PathVariable String idEntrenador) throws IllegalArgumentException, EntidadNoEncontrada{
 		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -249,7 +247,7 @@ public class UsuariosControladorRest {
 
 	@GetMapping(value = "/entrenador/{idEntrenador}/equipo", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ENTRENADOR')")
-	public EquiposIdsDTO getEquiposDeEntrenador(@PathVariable String idEntrenador) {
+	public EquiposIdsDTO getEquiposDeEntrenador(@PathVariable String idEntrenador) throws IllegalArgumentException, EntidadNoEncontrada{
 		EquiposIdsDTO equiposIdsDTO = servicioUsuarios.getEquiposDeEntrenador(idEntrenador);
 		return equiposIdsDTO;
 	}
@@ -259,7 +257,7 @@ public class UsuariosControladorRest {
 	public ResponseEntity<Void> modificarEntrenador(@PathVariable String idEntrenador,
 			@RequestParam("modificarEntrenadorDTO") String modificarEntrenadorDTO,
 			@RequestParam("dniFrontal") MultipartFile dniFrontal, @RequestParam("dniTrasero") MultipartFile dniTrasero,
-			@RequestParam("certDelitos") MultipartFile certDelitos) {
+			@RequestParam("certDelitos") MultipartFile certDelitos) throws IllegalArgumentException, EntidadNoEncontrada{
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -291,7 +289,7 @@ public class UsuariosControladorRest {
 	
 	@PutMapping(value = "/usuario/{idUsuario}/pass", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ENTRENADOR')")
-	public ResponseEntity<?> cambiarPass(@PathVariable String idUsuario, @Valid @RequestBody CambiarPassDTO cambiarPassDTO) {
+	public ResponseEntity<?> cambiarPass(@PathVariable String idUsuario, @Valid @RequestBody CambiarPassDTO cambiarPassDTO) throws IllegalArgumentException, EntidadNoEncontrada{
 		boolean confirmacion =servicioUsuarios.cambiarPass(idUsuario, cambiarPassDTO.getOldPass(), cambiarPassDTO.getNewPass());
 
 	    if (confirmacion) {
@@ -303,15 +301,11 @@ public class UsuariosControladorRest {
 
 	@DeleteMapping(value = "/entrenador/{idEntrenador}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> borrarEntrenador(@PathVariable String idEntrenador) {
+	public ResponseEntity<Void> borrarEntrenador(@PathVariable String idEntrenador) throws IllegalArgumentException, EntidadNoEncontrada{
 		EntrenadorDTO dto = servicioUsuarios.getEntrenador(idEntrenador);
 		servicioFotos.borrarFotos(dto.getDniDelantera(), dto.getDniTrasera(), dto.getCertDelitos());
 		servicioUsuarios.borrarEntrenador(idEntrenador);
 		return ResponseEntity.noContent().build();
 	}
 	
-//	@ExceptionHandler(IllegalArgumentException.class)										//TODO REVISAR
-//	public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-//	    return ResponseEntity.badRequest().body(ex.getMessage());
-//	}
 }

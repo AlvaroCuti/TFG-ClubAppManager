@@ -5,16 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Jugador extends Usuario {
-	private long dniDelantera; // TODO
-	private long dniTrasera; // TODO
+	private long dniDelantera;
+	private long dniTrasera;
 
 	private String emailTutor1;
-	private long dniDelanteraTutor1; // TODO
-	private long dniTraseraTutor1; // TODO
+	private long dniDelanteraTutor1;
+	private long dniTraseraTutor1;
 
 	private String emailTutor2;
-	private long dniDelanteraTutor2; // TODO
-	private long dniTraseraTutor2; // TODO
+	private long dniDelanteraTutor2;
+	private long dniTraseraTutor2;
 
 	private List<Asistencia> asistencias;
 	private String equipo;

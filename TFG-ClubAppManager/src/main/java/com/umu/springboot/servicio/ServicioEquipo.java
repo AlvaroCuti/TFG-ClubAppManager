@@ -15,6 +15,7 @@ import com.umu.springboot.modelo.Entrenador;
 import com.umu.springboot.modelo.Equipo;
 import com.umu.springboot.modelo.Jugador;
 import com.umu.springboot.modelo.Usuario;
+import com.umu.springboot.repositorios.EntidadNoEncontrada;
 import com.umu.springboot.repositorios.RepositorioEquipoMongo;
 import com.umu.springboot.repositorios.RepositorioUsuarioMongo;
 import com.umu.springboot.rest.EntrenadorDTO;
@@ -52,13 +53,13 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public String crearEquipo(String nombre, Categoria cat, List<Jugador> jugadores, List<Entrenador> entrenadores) {
+	public String crearEquipo(String nombre, Categoria cat, List<Jugador> jugadores, List<Entrenador> entrenadores) throws IllegalArgumentException {
 
 		if (jugadores == null || jugadores.isEmpty())
-			return null;
-
+			throw new IllegalArgumentException("jugadores: no debe ser nulo ni vacio");
+					
 		if (entrenadores == null || entrenadores.isEmpty())
-			return null;
+			throw new IllegalArgumentException("entrenadores: no debe ser nulo ni vacio");
 
 		Equipo equipo = new Equipo(nombre, cat, jugadores, entrenadores);
 
@@ -69,10 +70,10 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public String crearEquipo(String nombre, Categoria cat,  List<Usuario> usuarios) {
+	public String crearEquipo(String nombre, Categoria cat,  List<Usuario> usuarios) throws IllegalArgumentException{
 
 		if (usuarios == null || usuarios.isEmpty() || usuarios.contains(null))
-			return null;
+			throw new IllegalArgumentException("usuarios: no debe ser nulo ni vacio");
 
 		Equipo equipo = new Equipo(nombre, cat ,usuarios.stream().map(Entrenador.class::cast).collect(Collectors.toList()));
 
@@ -87,20 +88,23 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public void addJugadorAEquipo(String idEquipo, String idJugador) {
+	public void addJugadorAEquipo(String idEquipo, String idJugador) throws IllegalArgumentException, EntidadNoEncontrada{
 		
 		if (idEquipo == null || idEquipo.isEmpty())
-			return;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 		
 		if (idJugador == null || idJugador.isEmpty())
-			return;
+			throw new IllegalArgumentException("idJugador: no debe ser nulo ni vacio");
 		
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 		Usuario user = repositorioUsuario.findById(idJugador).orElse(null);
 		Jugador j = (Jugador) user;
 		
-		if((equipo == null) || (user == null))
-			return;
+		if((equipo == null))
+			throw new EntidadNoEncontrada("equipo: no existe el id");
+		
+		if((user == null))
+			throw new EntidadNoEncontrada("equipo: no existe el id");
 		
 		if(j.getEquipo() == null) {
 			equipo.addJugador(j);
@@ -113,19 +117,22 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 	
 	@Override
-	public void removeUsuarioDeEquipo(String idEquipo, String idUsuario) {
+	public void removeUsuarioDeEquipo(String idEquipo, String idUsuario) throws IllegalArgumentException, EntidadNoEncontrada{
 		
 		if (idEquipo == null || idEquipo.isEmpty())
-			return;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 		
 		if (idUsuario == null || idUsuario.isEmpty())
-			return;
+			throw new IllegalArgumentException("idUsuario: no debe ser nulo ni vacio");
 		
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 		Usuario user = repositorioUsuario.findById(idUsuario).orElse(null);
 		
-		if((equipo == null) || (user == null))
-			return;
+		if((equipo == null))
+			throw new EntidadNoEncontrada("equipo: no existe el id");
+		
+		if((user == null))
+			throw new EntidadNoEncontrada("equipo: no existe el id");
 		
 		if(user.getRol().equals("ENTRENADOR")) {
 			Entrenador  e = (Entrenador) user;
@@ -145,10 +152,10 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 	
 	@Override
-	public EquipoDTO getEquipo(String idEquipo) {
+	public EquipoDTO getEquipo(String idEquipo) throws IllegalArgumentException{
 
 		if (idEquipo == null || idEquipo.isEmpty())
-			return null;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
@@ -168,16 +175,10 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public void modificarEquipo(String idEquipo, String nombre, List<Usuario> entrenadores, List<Usuario> jugadores) {
+	public void modificarEquipo(String idEquipo, String nombre, List<Usuario> entrenadores, List<Usuario> jugadores) throws IllegalArgumentException{
 
 		if (idEquipo == null || idEquipo.isEmpty())
-			return;
-
-//		if (entrenadores == null || entrenadores.isEmpty() || entrenadores.contains(null))
-//			return;
-//
-//		if (jugadores == null || jugadores.isEmpty() || jugadores.contains(null))
-//			return;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
 
@@ -204,14 +205,15 @@ public class ServicioEquipo implements IServicioEquipo {
 	}
 
 	@Override
-	public void borrarEquipo(String idEquipo) {
+	public void borrarEquipo(String idEquipo) throws IllegalArgumentException, EntidadNoEncontrada{
 		if (idEquipo == null || idEquipo.isEmpty())
-			return;
+			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
+
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElseGet(null);
 		
 		if(equipo == null)
-			return;
+			throw new EntidadNoEncontrada("equipo: no existe el id");
 		
 		equipo.getJugadores().stream().forEach(j -> {
 			j.borrarEquipo();
