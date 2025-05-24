@@ -81,9 +81,15 @@ public class ServicioEntrenamiento implements IServicioEntrenamiento {
 		if ((idEquipo == null) || (idEquipo.isEmpty()))
 			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
-		if (fecha == null)
+		if ((entrenador == null) || (entrenador.isEmpty()))
+			throw new IllegalArgumentException("entrenador: no debe ser nulo ni vacio");
+		
+		if ((fecha == null) || (fecha.isEmpty()))
 			throw new IllegalArgumentException("fecha: no debe ser nulo ni vacio");
 
+		if ((hora == null)|| (hora.isEmpty()))
+			throw new IllegalArgumentException("hora: no debe ser nulo ni vacio");
+		
 		if ((lugar == null) || (lugar.isEmpty()))
 			throw new IllegalArgumentException("lugar: no debe ser nulo ni vacio");
 
