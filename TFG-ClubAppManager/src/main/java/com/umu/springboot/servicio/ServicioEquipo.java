@@ -215,12 +215,12 @@ public class ServicioEquipo implements IServicioEquipo {
 		if(equipo == null)
 			throw new EntidadNoEncontrada("equipo: no existe el id");
 		
-		equipo.getJugadores().stream().forEach(j -> {
+		equipo.getJugadores().stream().filter(e -> repositorioUsuario.existsById(e.getTel())).forEach(j -> {
 			j.borrarEquipo();
 			repositorioUsuario.save((Usuario)j);
 		});
 		
-		equipo.getEntrenadores().stream().forEach(e -> {
+		equipo.getEntrenadores().stream().filter(e -> repositorioUsuario.existsById(e.getTel())).forEach(e -> {
 			e.borrarEquipo(equipo.getId());
 			repositorioUsuario.save((Entrenador)e);
 		});
