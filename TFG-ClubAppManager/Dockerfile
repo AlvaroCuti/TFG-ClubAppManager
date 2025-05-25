@@ -1,22 +1,14 @@
-# Importing JDK and copying required files
-FROM openjdk:19-jdk AS build
+FROM maven:3.8.5-openjdk-11 AS builder
 WORKDIR /app
+
 COPY pom.xml .
-COPY src src
+RUN mvn -B dependency:resolve
 
-# Copy Maven wrapper
-COPY mvnw .
-COPY .mvn .mvn
+COPY src ./src
+RUN mvn package spring-boot:repackage
 
-# Set execution permission for the Maven wrapper
-RUN chmod +x ./mvnw
-RUN ./mvnw clean package -DskipTests
+FROM eclipse-temurin:11-jdk
+WORKDIR /app
 
-# Stage 2: Create the final Docker image using OpenJDK 19
-FROM openjdk:19-jdk
-VOLUME /tmp
-
-# Copy the JAR from the build stage
-COPY --from=build /app/target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
-EXPOSE 8080
+COPY --from=builder /app/target/TFG-ClubAppManager-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
