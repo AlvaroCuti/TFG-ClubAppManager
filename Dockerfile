@@ -1,12 +1,13 @@
-# Build stage
-FROM maven:3.8.5-jdk-17 AS builder
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+FROM maven:3.8.5-jdk-8 AS builder
 
-# Run stage
-FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY --from=builder /app/target/TFG-ClubAppManager-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+WORKDIR /app/
+COPY pom.xml .
+RUN mvn -e -B dependency:resolve
+COPY src ./src
+RUN mvn package spring-boot:repackage
+
+FROM openjdk:8
+COPY --from=builder /app/target/pasarela-0.0.1-SNAPSHOT.jar /root.jar
+CMD ["java", "-jar", "/root.jar"]
+
+EXPOSE 8080
