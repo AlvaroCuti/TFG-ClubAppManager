@@ -1,7 +1,5 @@
 package com.umu.springboot.rest;
 
-import java.time.LocalDate;
-
 public class EntrenadorCompletoDTO {
 	private String tel;
 	private String nombre;

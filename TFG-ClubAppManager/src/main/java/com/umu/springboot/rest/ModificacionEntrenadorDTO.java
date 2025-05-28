@@ -1,6 +1,5 @@
 package com.umu.springboot.rest;
 
-import java.time.LocalDate;
 
 public class ModificacionEntrenadorDTO {
 	private String tel;
@@ -8,9 +7,9 @@ public class ModificacionEntrenadorDTO {
 	private String fechaNac;
 	private String email;
 	private String pass;
-	private String dniDelantera; // TODO
-	private String dniTrasera; // TODO
-	private String certificadoDelitosSexuales; // TODO
+	private String dniDelantera; 
+	private String dniTrasera; 
+	private String certificadoDelitosSexuales; 
 
 	public ModificacionEntrenadorDTO(String tel, String nombre, String fechaNac, String email, String pass,
 			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {

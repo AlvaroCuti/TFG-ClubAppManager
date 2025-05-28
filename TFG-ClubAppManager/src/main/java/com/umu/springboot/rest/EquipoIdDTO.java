@@ -4,7 +4,6 @@ public class EquipoIdDTO {
 	private String idEquipo;
 
 	public EquipoIdDTO() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public EquipoIdDTO(String idEquipo) {

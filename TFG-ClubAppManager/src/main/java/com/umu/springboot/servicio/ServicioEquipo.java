@@ -28,8 +28,8 @@ import com.umu.springboot.rest.UsuarioElementoDTO;
 public class ServicioEquipo implements IServicioEquipo {
 
 	@Autowired
-	private RepositorioEquipoMongo repositorioEquipo; // TODO no debe ser el repositorio concreto pero no funncionan las
-														// funciones si no se pone mongo
+	private RepositorioEquipoMongo repositorioEquipo;
+
 	@Autowired
 	private RepositorioUsuarioMongo repositorioUsuario;
 

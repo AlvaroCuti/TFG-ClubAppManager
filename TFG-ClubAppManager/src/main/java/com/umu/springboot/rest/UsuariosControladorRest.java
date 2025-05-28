@@ -149,7 +149,7 @@ public class UsuariosControladorRest {
 
 			zipOut.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 		ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
@@ -189,13 +189,10 @@ public class UsuariosControladorRest {
 		try {
 			creacionDTO = mapper.readValue(crearEntrenadorDTO, CrearEntrenadorDTO.class);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -236,7 +233,7 @@ public class UsuariosControladorRest {
 
 			zipOut.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 		ByteArrayResource recurso = new ByteArrayResource(baos.toByteArray());
@@ -265,13 +262,10 @@ public class UsuariosControladorRest {
 		try {
 			modificacionDTO = mapper.readValue(modificarEntrenadorDTO, CrearEntrenadorDTO.class);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

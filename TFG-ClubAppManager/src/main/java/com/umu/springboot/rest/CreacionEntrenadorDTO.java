@@ -8,9 +8,9 @@ public class CreacionEntrenadorDTO {
 	private LocalDate fechaNac;
 	private String email;
 	private String pass;
-	private String dniDelantera; // TODO
-	private String dniTrasera; // TODO
-	private String certificadoDelitosSexuales; // TODO
+	private String dniDelantera;
+	private String dniTrasera;
+	private String certificadoDelitosSexuales;
 
 	public CreacionEntrenadorDTO(String tel, String nombre, LocalDate fechaNac, String email, String pass,
 			String dniDelantera, String dniTrasera, String certificadoDelitosSexuales) {

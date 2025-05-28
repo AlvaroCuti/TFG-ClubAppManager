@@ -31,11 +31,11 @@ import com.umu.springboot.rest.EntrenamientoDTO;
 public class ServicioEntrenamiento implements IServicioEntrenamiento {
 
 	@Autowired
-	private RepositorioEquipoMongo repositorioEquipo; // TODO
+	private RepositorioEquipoMongo repositorioEquipo; 
 	@Autowired
-	private RepositorioUsuarioMongo repositorioUsuario; // TODO
+	private RepositorioUsuarioMongo repositorioUsuario; 
 	@Autowired
-	private RepositorioEntrenamientoMongo repositorioEntrenamiento; // TODO
+	private RepositorioEntrenamientoMongo repositorioEntrenamiento; 
 
 	@Override
 	public Page<EntrenamientoDTO> listarEntrenamientos(String idEquipo, Pageable paginacion)  throws IllegalArgumentException{
