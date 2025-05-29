@@ -46,7 +46,9 @@ public class ServicioEquipo implements IServicioEquipo {
 			equipoDTO.setEntrenadores(e.getEntrenadores().stream()
 											.map(eq -> new UsuarioElementoDTO(eq.getTel(), eq.getNombre()))
 											.collect(Collectors.toList()));
-			
+			equipoDTO.setJugadores(e.getJugadores().stream()
+										.map(eq -> new UsuarioElementoDTO(eq.getTel(), eq.getNombre()))
+										.collect(Collectors.toList()));
 			equipoDTO.setNumeroJugadores(Integer.toString(numJugadores));
 			return equipoDTO;
 		});
@@ -181,7 +183,6 @@ public class ServicioEquipo implements IServicioEquipo {
 			throw new IllegalArgumentException("idEquipo: no debe ser nulo ni vacio");
 
 		Equipo equipo = repositorioEquipo.findById(idEquipo).orElse(null);
-
 		equipo.modificar(nombre, entrenadores.stream().map(Entrenador.class::cast).collect(Collectors.toList()),
 				jugadores.stream().map(Jugador.class::cast).collect(Collectors.toList()));
 
@@ -194,6 +195,7 @@ public class ServicioEquipo implements IServicioEquipo {
 		}
 
 		entrenadores.stream().filter(u -> u instanceof Entrenador).map(u -> (Entrenador) u).forEach(u -> {
+			u.borrarEquipo(idEquipo);
 			u.addEquipo(equipo.getId());
 			repositorioUsuario.save((Usuario) u);
 		});
@@ -243,7 +245,10 @@ public class ServicioEquipo implements IServicioEquipo {
 	public List<Usuario> dtoToModelJugador(List<JugadorIdDTO> jugadoresDTO) {
 		List<Usuario> jugadores = new LinkedList<Usuario>();
 		for (JugadorIdDTO jugador : jugadoresDTO) {
-			jugadores.add(repositorioUsuario.findById(jugador.getTel()).orElse(null));
+			Usuario user = repositorioUsuario.findById(jugador.getTel()).orElse(null);
+			if (!user.getRol().equals("JUGADOR"))
+				user = null;
+			jugadores.add(user);
 		}
 		return jugadores;
 	}

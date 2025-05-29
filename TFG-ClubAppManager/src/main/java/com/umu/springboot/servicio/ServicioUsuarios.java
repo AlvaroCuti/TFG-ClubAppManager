@@ -358,6 +358,14 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		if (idEntrenador == null || idEntrenador.isEmpty())
 			throw new IllegalArgumentException("idEntrenador: no debe ser nulo ni vacio");
 
+		Usuario usuario = repositorioUsuario.findById(idEntrenador).orElseGet(null);
+		
+		((Entrenador)usuario).getEquipos().stream().forEach(e ->{
+																Equipo eq = repositorioEquipo.findById(e).orElse(null);
+																eq.removeEntrenador(idEntrenador);
+																repositorioEquipo.save(eq);
+		});
+		
 		repositorioUsuario.deleteById(idEntrenador);
 
 		return;
